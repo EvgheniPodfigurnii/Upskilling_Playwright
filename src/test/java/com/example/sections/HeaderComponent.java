@@ -5,10 +5,6 @@ import com.example.playwrightManager.PlaywrightManager;
 public class HeaderComponent {
     PlaywrightManager driver;
 
-    public HeaderComponent(PlaywrightManager driverManager) {
-        this.driver = driverManager;
-    }
-
     String home = "a[href='/']";
     String products = "a[href='/products']";
     String cart = "a[href='/view_cart']";
@@ -20,6 +16,10 @@ public class HeaderComponent {
     String logout = "a[href='/logout']";
     String deleteAccount = "a[href='/delete_account']";
     String loggedUser = "//a[contains(text(), 'Logged in as')]/b";
+
+    public HeaderComponent(PlaywrightManager driver) {
+        this.driver = driver;
+    }
 
     public void clickHeaderLink(String linkName) {
         switch (linkName.toLowerCase()) {
@@ -58,12 +58,7 @@ public class HeaderComponent {
         }
     }
 
-//    public String getUserLoggedInAs() {
-//        WebDriverWait wait = new WebDriverWait(driver.getDriver(), Duration.ofSeconds(10));
-//
-//        WebElement userElement = wait.until(ExpectedConditions
-//                .visibilityOfElementLocated(loggedUser));
-//
-//        return userElement.getText();
-//    }
+    public String getUserLoggedInAs() {
+        return driver.findElement(loggedUser).textContent().trim();
+    }
 }

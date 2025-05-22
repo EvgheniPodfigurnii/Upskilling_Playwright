@@ -2,70 +2,65 @@ package com.example.stepsDefinition.ui;
 
 import com.example.dataFaker.DataFaker;
 import com.example.pages.ui.LoginPage;
-import com.example.playwrightManager.PlaywrightManager;
-import com.example.softAssertion.SoftAssertion;
 import com.example.commonMethods.CommonMethods;
 import com.example.utils.ScenarioContext;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.testng.asserts.SoftAssert;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
 
 public class LoginStepDefinition {
-    PlaywrightManager driver = PlaywrightManager.getInstance();
+    private static final Logger logger = LogManager.getRootLogger();
     ScenarioContext scenarioContext = ScenarioContext.getInstance();
-    LoginPage loginPage = new LoginPage();
     CommonMethods commonMethods = new CommonMethods();
+    SoftAssert softAssert = new SoftAssert();
+    LoginPage loginPage = new LoginPage();
     DataFaker dataFaker = new DataFaker();
-
-//    public LoginStepDefinition(PlaywrightManager driverManager) {
-//        this.driver = Objects.requireNonNull(driverManager);
-//        this.loginPage = new LoginPage(driverManager);
-//    }
-//
-//    public LoginStepDefinition(ScenarioContext scenarioContext) {
-//        this.scenarioContext = scenarioContext;
-//    }
-//
-//    public LoginStepDefinition() {
-//        this.commonMethods = new CommonMethods();
-//        this.dataFaker = new DataFaker();
-//    }
-
-//    LoginPage loginPage = new LoginPage(driver);
-
-
 
     @When("The user enters registration credentials")
     public void user_enters_registration_username_email() {
         String signUpName = dataFaker.createName();
         String signUpEmail = dataFaker.createEmail();
+        String signUpPassword = dataFaker.createPassword();
 
         loginPage.fillNameSignUp(signUpName);
         loginPage.fillEmailSignUp(signUpEmail);
 
         scenarioContext.set("signUpName", signUpName);
         scenarioContext.set("signUpEmail", signUpEmail);
+        scenarioContext.set("signUpPassword", signUpPassword);
+
+        logger.info("Sign Up Name : {}", signUpName);
+        logger.info("Sign Up Email : {}", signUpEmail);
     }
 
     @When("The user enters login credentials")
     public void user_enters_login_email_password() {
-//        System.out.println(scenarioContext.get("email"));
-
-//        loginPage.fillEmailLogin(scenarioContext.get("email"));
         loginPage.fillEmailLogin(scenarioContext.get("email"));
         loginPage.fillPasswordLogin(scenarioContext.get("password"));
+
+        logger.info("Login Email : {} \n Login Password : {}", scenarioContext.get("email"), scenarioContext.get("password"));
     }
 
-//    @And("Check that 'ENTER ACCOUNT INFORMATION' is visible")
-//    public void check_that_account_information_is_visible() {
-//        driver.findElement(By.className("login-form")).isDisplayed();
-//    }
+    @When("The user enters credentials after signup")
+    public void user_enters_credentials_after_signup() {
+        String email = scenarioContext.get("signUpEmail");
+        String password = scenarioContext.get("signUpPassword");
+
+        loginPage.fillEmailLogin(email);
+        loginPage.fillPasswordLogin(password);
+
+        logger.info("Login Email after SignUp : {}", email);
+        logger.info("Login Password after SignUp : {}", password);
+    }
 
     @And("Check if the Registration info has been copied to Account Info")
     public void check_registration_info_copied_to_Account_info() {
@@ -90,10 +85,12 @@ public class LoginStepDefinition {
             String actual = actualListOfRegistrationInfo.get(value);
             String expected = expectedListOfRegistrationInfo.get(value);
 
-            SoftAssertion.get().assertEquals(actual, expected, "Failed to copy value: " + value);
+            softAssert.assertEquals(actual, expected, "Failed to copy value: " + value);
         }
 
-        SoftAssertion.get().assertAll();
+        softAssert.assertAll();
+
+        logger.info("Registration name and email has been copied to Account Info successfully");
     }
 
     @Then("The user fills the account information:")
@@ -101,7 +98,7 @@ public class LoginStepDefinition {
         Map<String, String> data = table.asMap(String.class, String.class);
 
         loginPage.chooseTitle();
-        loginPage.fillPassword(dataFaker.createPassword());
+        loginPage.fillPassword(scenarioContext.get("signUpPassword"));
         loginPage.fillDay(dataFaker.createBirthday("day"));
         loginPage.fillMonth(dataFaker.createBirthday("month"));
         loginPage.fillYear(dataFaker.createBirthday("year"));
@@ -113,6 +110,8 @@ public class LoginStepDefinition {
         if (data.get("Special_Offers").equalsIgnoreCase("yes")) {
             loginPage.clickSpecialOffers();
         }
+
+        logger.info("Account information has been filled to Account Info successfully");
     }
 
     @And("The user fills the address information:")
@@ -129,6 +128,8 @@ public class LoginStepDefinition {
         loginPage.fillCity(dataFaker.createCity());
         loginPage.fillZipCode(dataFaker.createZipCode());
         loginPage.fillMobileNumber(dataFaker.createMobilePhone());
+
+        logger.info("Address Information has been filled to Address Info successfully");
     }
 
 //
@@ -139,8 +140,10 @@ public class LoginStepDefinition {
 
     @And("Click the {string} button on Signup_Login Page")
     public void click_button_on_signuplogin_page(String nameButton) {
-        String label = commonMethods.refactoredUserFriendlyName(nameButton);
-        loginPage.clickButtonOnSignUpLoginPage(label.toLowerCase());
+        String button = commonMethods.refactoredUserFriendlyName(nameButton);
+        loginPage.clickButtonOnSignUpLoginPage(button.toLowerCase());
+
+        logger.info("{} button on Signup_Login Page clicked", button);
     }
 
 //    @And("The URL of the {string} page must be correct")
