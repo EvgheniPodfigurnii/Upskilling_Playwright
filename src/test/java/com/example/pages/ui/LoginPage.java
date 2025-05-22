@@ -2,11 +2,7 @@ package com.example.pages.ui;
 
 import com.example.playwrightManager.PlaywrightManager;
 import com.microsoft.playwright.Locator;
-import com.microsoft.playwright.Page;
 import java.util.Map;
-import java.util.Objects;
-
-
 
 public class LoginPage {
     PlaywrightManager driver = PlaywrightManager.getInstance();
@@ -37,16 +33,11 @@ public class LoginPage {
     private final Locator message;
     private final Map<String, Locator> signUpLoginButtons;
 
-//    public LoginPage(PlaywrightManager driverManager) {
-//        this.driver = driverManager;
-//    }
-
     public LoginPage() {
         this.emailLogin = driver.getPage().locator("[data-qa='login-email']");
         this.passwordLogin = driver.getPage().locator("[data-qa='login-password']");
         this.nameSignUp = driver.getPage().locator("[data-qa='signup-name']");
         this.emailSignUp = driver.getPage().locator("[data-qa='signup-email']");
-//        this.title = driver.getPage().locator("input[type='radio']");
         this.title = driver.getPage().locator("input[type='radio'][value='Mr']");
         this.name = driver.getPage().locator("#name");
         this.email = driver.getPage().locator("#email");
@@ -80,28 +71,22 @@ public class LoginPage {
     }
 
     public void fillEmailLogin(String email) {
-//        Awaitility.await().atMost(Duration.ofSeconds(10)).pollInterval(Duration.ofMillis(500)).until(emailLogin::isDisplayed);
-//        driver.getPage().locator(String.valueOf(emailLogin)).fill(email);
         emailLogin.fill(email);
     }
 
     public void fillPasswordLogin(String password) {
-//        Awaitility.await().atMost(Duration.ofSeconds(10)).pollInterval(Duration.ofMillis(500)).until(passwordLogin::isDisplayed);
         passwordLogin.fill(password);
     }
 
     public void fillNameSignUp(String username) {
-//        Awaitility.await().atMost(Duration.ofSeconds(10)).pollInterval(Duration.ofMillis(500)).until(nameSignUp::isDisplayed);
         nameSignUp.fill(username);
     }
 
     public void fillEmailSignUp(String email) {
-//        Awaitility.await().atMost(Duration.ofSeconds(10)).pollInterval(Duration.ofMillis(500)).until(emailSignUp::isDisplayed);
         emailSignUp.fill(email);
     }
 
     public void clickButtonOnSignUpLoginPage(String buttonName) {
-//        driver.findElement(String.valueOf(signUpLoginButtons.get(buttonName))).click();
         signUpLoginButtons.get(buttonName).click();
     }
 
@@ -180,8 +165,4 @@ public class LoginPage {
     public void fillMobileNumber(String mobileNumberValue) {
         mobileNumber.fill(mobileNumberValue);
     }
-
-//    public String getCurrentURL() {
-//        return driver.getCurrentURL();
-//    }
 }

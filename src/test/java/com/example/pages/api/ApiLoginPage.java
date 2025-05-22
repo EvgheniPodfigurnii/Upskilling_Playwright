@@ -7,12 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ApiLoginPage {
-    DataFaker dataFaker = new DataFaker();
     ScenarioContext scenarioContext = ScenarioContext.getInstance();
-
-//    public ApiLoginPage(ScenarioContext scenarioContext) {
-//        this.scenarioContext = scenarioContext;
-//    }
+    DataFaker dataFaker = new DataFaker();
 
     public Map<String, String> generateUserParams(boolean forScenarioContext) {
         Map<String, String> params = new HashMap<>();
@@ -42,5 +38,4 @@ public class ApiLoginPage {
 
         return params;
     }
-
 }

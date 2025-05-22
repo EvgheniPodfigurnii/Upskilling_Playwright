@@ -1,8 +1,6 @@
 package com.example.utils;
 
-
 import com.example.configurations.ConfigLoader;
-
 import java.util.HashMap;
 import java.util.Map;
 

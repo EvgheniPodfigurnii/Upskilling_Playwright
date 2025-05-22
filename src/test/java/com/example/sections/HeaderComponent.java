@@ -58,12 +58,7 @@ public class HeaderComponent {
         }
     }
 
-//    public String getUserLoggedInAs() {
-//        WebDriverWait wait = new WebDriverWait(driver.getDriver(), Duration.ofSeconds(10));
-//
-//        WebElement userElement = wait.until(ExpectedConditions
-//                .visibilityOfElementLocated(loggedUser));
-//
-//        return userElement.getText();
-//    }
+    public String getUserLoggedInAs() {
+        return driver.findElement(loggedUser).textContent().trim();
+    }
 }

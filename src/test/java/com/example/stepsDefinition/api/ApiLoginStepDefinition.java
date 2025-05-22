@@ -4,7 +4,6 @@ import com.example.commonMethods.CommonMethods;
 import com.example.configurations.ConfigLoader;
 import com.example.dataFaker.DataFaker;
 import com.example.pages.api.ApiLoginPage;
-import com.example.softAssertion.SoftAssertion;
 import com.example.utils.ScenarioContext;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -12,59 +11,58 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.testng.asserts.SoftAssert;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
-
-import static org.junit.Assert.assertEquals;
 
 public class ApiLoginStepDefinition {
-    Logger log = Logger.getLogger(ApiLoginStepDefinition.class.getName());
+    private static final Logger logger = LogManager.getLogger("scenario");
     CommonMethods commonMethods = new CommonMethods();
     DataFaker dataFaker = new DataFaker();
     ScenarioContext scenarioContext = ScenarioContext.getInstance();
     ApiLoginPage apiLoginPage = new ApiLoginPage();
-//
-//    public ApiLoginStepDefinition(ScenarioContext scenarioContext) {
-//        this.scenarioContext = scenarioContext;
-//        this.apiLoginPage = new ApiLoginPage(scenarioContext);
-//    }
-
+    SoftAssert softAssert = new SoftAssert();
     private String endpoint;
     private Response response;
 
     @Given("The API endpoint is {string}")
     public void the_api_endpoint_is(String link) {
-        commonMethods.refactoredUserFriendlyName(link);
-        endpoint = String.format("%s%s", ConfigLoader.getProperty("base.url"), ConfigLoader.getProperty(String.format("api.%s", link)));
+        String linkAfterRefactoring = commonMethods.refactoredUserFriendlyName(link);
+        endpoint = String.format("%s%s", ConfigLoader.getProperty("base.url"), ConfigLoader.getProperty(String.format("api.%s", linkAfterRefactoring)));
 
-        log.info("API endpoint is: " + endpoint);
+        logger.info("API endpoint is: {}", endpoint);
     }
-
-//    @And("The API endpoint is {string}")
-//    public void api_endpoint_is(String link) {
-//        commonMethods.refactoredUserFriendlyName(link);
-//        endpoint = String.format("%s%s", ConfigLoader.getProperty("base.url"), ConfigLoader.getProperty(String.format("api.%s", link)));
-//        log.info("API endpoint is: " + endpoint);
-//    }
 
     @When("Send a POST request with valid email and password")
     public void send_a_post_request_with_email_and_password() {
+        try {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", "application/json");
+
         Map<String, String> params = new HashMap<>();
         params.put("email", ConfigLoader.getProperty("email"));
         params.put("password", ConfigLoader.getProperty("password"));
 
+
         response = RestAssured.given()
+                .headers("Content-Type", "application/x-www-form-urlencoded")
                 .formParams(params)
                 .when()
                 .post(endpoint);
 
-        log.info(response.asString());
+        logger.info("Response after POST request with valid email and password is : {}", response.getStatusCode());
+        } catch (AssertionError e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
     }
 
     @When("Send a POST request without email parameter")
     public void send_a_post_request_without_email_parameter() {
+        try {
         Map<String, String> params = new HashMap<>();
         params.put("password", ConfigLoader.getProperty("password"));
 
@@ -73,11 +71,16 @@ public class ApiLoginStepDefinition {
                 .when()
                 .post(endpoint);
 
-        log.info(response.asString());
+        logger.info("Response after POST request without email parameter is : {}", response.getStatusCode());
+        } catch (AssertionError e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
     }
 
     @When("Send a POST request with not exist user")
     public void send_a_post_request_without_not_exist_user() {
+        try {
         Map<String, String> params = new HashMap<>();
         params.put("email", dataFaker.createEmail());
         params.put("password", dataFaker.createPassword());
@@ -87,11 +90,16 @@ public class ApiLoginStepDefinition {
                 .when()
                 .post(endpoint);
 
-        log.info(response.asString());
+        logger.info("Response after POST request with not exist user is : {}", response.getStatusCode());
+        } catch (AssertionError e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
     }
 
     @When("Create new user account")
     public void create_new_user_account() {
+        try {
         Map<String, String> params = apiLoginPage.generateUserParams(false);
 
         response = RestAssured.given()
@@ -99,11 +107,16 @@ public class ApiLoginStepDefinition {
                 .when()
                 .post(endpoint);
 
-        log.info(response.asString());
+        logger.info("Response after Create new user account is : {}", response.getStatusCode());
+        } catch (AssertionError e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
     }
 
     @When("Create new user account for DELETE flow")
     public void create_new_user_account_delete_flow() {
+        try {
         Map<String, String> params = apiLoginPage.generateUserParams(false);
 
         response = RestAssured.given()
@@ -114,11 +127,16 @@ public class ApiLoginStepDefinition {
         scenarioContext.set("apiEmail", params.get("email"));
         scenarioContext.set("apiPassword", params.get("password"));
 
-        log.info(response.asString());
+        logger.info("Response after Create new user account for DELETE flow is : {}", response.getStatusCode());
+        } catch (AssertionError e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
     }
 
     @And("DELETE user account")
     public void delete_user_account() {
+        try {
         Map<String, String> params = new HashMap<>();
         params.put("email", scenarioContext.get("apiEmail"));
         params.put("password", scenarioContext.get("apiPassword"));
@@ -128,11 +146,16 @@ public class ApiLoginStepDefinition {
                 .when()
                 .delete(endpoint);
 
-        log.info(response.asString());
+        logger.info("Response after DELETE user account is : {}", response.getStatusCode());
+        } catch (AssertionError e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
     }
 
     @When("Create new user account for UPDATE flow")
     public void create_new_user_account_update_flow() {
+        try {
         Map<String, String> params = apiLoginPage.generateUserParams(true);
 
         response = RestAssured.given()
@@ -140,22 +163,32 @@ public class ApiLoginStepDefinition {
                 .when()
                 .post(endpoint);
 
-        log.info(response.asString());
+        logger.info("Response after Create new user account for UPDATE flow is : {}", response.getStatusCode());
+        } catch (AssertionError e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
     }
 
     @When("Get user details")
     public void get_user_details() {
+        try {
         response = RestAssured.given()
                 .queryParam("email", ConfigLoader.getProperty("email"))
                 .when()
                 .get(endpoint);
 
-        log.info(response.asString());
+        logger.info("Response after Get user details is : {}", response.getStatusCode());
+        } catch (AssertionError e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
     }
 
     @And("Update user account")
     public void update_user_account() {
 
+        try {
         Map<String, String> params = new HashMap<>();
         params.put("name", scenarioContext.get("apiname"));
         params.put("email", scenarioContext.get("apiemail"));
@@ -180,45 +213,82 @@ public class ApiLoginStepDefinition {
                 .when()
                 .put(endpoint);
 
-        log.info(response.asString());
+        logger.info("Response after Update user account is : {}", response.getStatusCode());
+        } catch (AssertionError e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
     }
 
+    @Then("The response code from JSON should be {int}")
+    public void the_response_code_should_be(int expectedResponseCode) {
+        try {
+        String responseBody = response.getBody().asString();
 
+        int actualResponseCode = Integer.parseInt(commonMethods.getValueFromJson(responseBody, "responseCode"));
 
-    @Then("The response code should be {int}")
-    public void the_response_status_code_should_be(int expectedResponseCode) {
-        SoftAssertion.get().assertEquals(response.getStatusCode(), expectedResponseCode);
-        SoftAssertion.get().assertAll();
+        softAssert.assertEquals(actualResponseCode, expectedResponseCode);
+        softAssert.assertAll();
+
+        logger.info("The response code from JSON : {}", actualResponseCode);
+        } catch (AssertionError e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
     }
 
-//    @Then("The response code from JSON should be {int}")
-//    public void the_response_code_should_be(int expectedResponseCode) {
-//        String responseBody = response.getBody().asString();
-//        int actualResponseCode = Integer.parseInt(commonMethods.getValueFromJson(responseBody, "responseCode"));
-//
-//        assertEquals(actualResponseCode, expectedResponseCode);
-//    }
-//
-//    @And("The response message from JSON should be {string}")
-//    public void the_response_message_should_be(String expectedMessage) {
-//        String responseBody = response.getBody().asString();
-//        String actualResponseMessage = commonMethods.getValueFromJson(responseBody, "message");
-//
-//        assertEquals(actualResponseMessage, expectedMessage);
-//
-////        SoftAssertion.get().assertEquals(actualResponseMessage, expectedMessage);
-////        SoftAssertion.get().assertAll();
-//    }
-//
-//    @And("JSON should be contains {string} details")
-//    public void json_user_details(String object) {
-//        String responseBody = response.getBody().asString();
-//        String actualResponseMessage = commonMethods.getValueFromJson(responseBody, object);
-//
-//            if (!actualResponseMessage.isEmpty()) {
-//                System.out.println(actualResponseMessage);
-//            } else {
-//                System.err.println("JSON returned null");
-//            }
-//    }
+    @And("The response message from JSON should be {string}")
+    public void the_response_message_should_be(String expectedMessage) {
+        try {
+            String responseBody = response.getBody().asString();
+            String actualResponseMessage = commonMethods.getValueFromJson(responseBody, "message");
+
+            softAssert.assertEquals(expectedMessage, actualResponseMessage);
+            softAssert.assertAll();
+
+            logger.info("Response message from JSON : {}", actualResponseMessage);
+        } catch (AssertionError e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
+    }
+
+    @And("JSON should be contains {string} details")
+    public void json_user_details(String object) {
+        String responseBody = response.getBody().asString();
+        String actualResponseMessage = commonMethods.getValueFromJson(responseBody, object);
+
+        if (!actualResponseMessage.isEmpty()) {
+            logger.info("Response message from JSON contains {} details : {}", object, actualResponseMessage);
+        } else {
+            logger.error("JSON returned null");
+        }
+    }
+
+    @When("Send {string} request")
+    public void send_request(String method) {
+        try {
+        switch (method.toUpperCase()) {
+            case "GET":
+
+                response = RestAssured.given()
+                        .when()
+                        .get(endpoint);
+                break;
+            case "POST":
+
+                response = RestAssured.given()
+                        .when()
+                        .post(endpoint);
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported method: " + method);
+        }
+
+        logger.info("{} request was successfully sent. Status: {}", method.toUpperCase(), response.getStatusCode());
+        } catch (AssertionError e) {
+            logger.error(e.getMessage());
+            throw e;
+        }
+    }
 }

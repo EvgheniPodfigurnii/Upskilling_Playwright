@@ -1,3 +1,4 @@
+
 package com.example.playwrightManager;
 
 import com.example.configurations.ConfigLoader;
@@ -30,7 +31,8 @@ public class PlaywrightManager {
                 break;
         }
 
-        context = browser.newContext();
+//        context = browser.newContext();
+        context = browser.newContext(new Browser.NewContextOptions().setViewportSize(1920, 1080));
         page = context.newPage();
     }
 
@@ -50,14 +52,18 @@ public class PlaywrightManager {
     }
 
     public void close() {
-        context.close();
-        browser.close();
-        playwright.close();
+        if (browser != null) {
+            browser.close();
+            browser = null;
+        }
+        if (playwright != null) {
+            playwright.close();
+            playwright = null;
+        }
+        instance = null; // <- Important to reset for next scenario
     }
 
     public Locator findElement(String locator) {
         return page.locator(locator);
-        //        return browser.newPage().locator(locator);
     }
-
 }

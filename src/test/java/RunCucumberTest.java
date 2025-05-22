@@ -5,13 +5,13 @@ import io.cucumber.junit.CucumberOptions;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = "src/test/resources/features",
-        glue = {
-                "com.example.stepsDefinition"
-        },
-        plugin = {"pretty", "html:target/cucumber-report.html"},
+        glue = "com.example.stepsDefinition",
+//        plugin = {"pretty", "html:target/cucumber-report.html"},
+        plugin = {"pretty"},
         monochrome = true,
 //        tags = "@Run and @UI"
-        tags = "@Run and @API"
+//        tags = "@Run and @API and @11111"
+        tags = "@Run and @sss and @803"
 )
 
 public class RunCucumberTest {

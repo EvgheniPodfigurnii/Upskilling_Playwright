@@ -13,38 +13,26 @@ public class CommonMethods {
                 .replaceAll("^_+|_+$", "");
     }
 
-//    public String getValueFromJson(String jsonString, String key) {
-//        try {
-//            ObjectMapper mapper = new ObjectMapper();
-//            JsonNode root = mapper.readTree(jsonString);
-//            JsonNode valueNode = root.get(key);
-//            return valueNode != null ? valueNode.asText() : null;
-//        } catch (Exception e) {
-//            System.out.println("Failed to parse JSON: " + e.getMessage());
-//            return null;
-//        }
-//    }
-//
-//    public String getValueFromJson(String jsonString, String key) {
-//        try {
-//            ObjectMapper mapper = new ObjectMapper();
-//            JsonNode root = mapper.readTree(jsonString);
-//            JsonNode valueNode = root.get(key);
-//
-//            if (valueNode != null) {
-//                // If it's a simple value (string, int), return as text
-//                if (valueNode.isValueNode()) {
-//                    return valueNode.asText();
-//                } else {
-//                    // If it's an object or array, convert to string
-//                    return mapper.writeValueAsString(valueNode);
-//                }
-//            } else {
-//                return null;
-//            }
-//        } catch (Exception e) {
-//            System.out.println("Failed to parse JSON: " + e.getMessage());
-//            return null;
-//        }
-//    }
+    public String getValueFromJson(String jsonString, String key) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(jsonString);
+            JsonNode valueNode = root.get(key);
+
+            if (valueNode != null) {
+                // If it's a simple value (string, int), return as text
+                if (valueNode.isValueNode()) {
+                    return valueNode.asText();
+                } else {
+                    // If it's an object or array, convert to string
+                    return mapper.writeValueAsString(valueNode);
+                }
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            System.out.println("Failed to parse JSON: " + e.getMessage());
+            return null;
+        }
+    }
 }
