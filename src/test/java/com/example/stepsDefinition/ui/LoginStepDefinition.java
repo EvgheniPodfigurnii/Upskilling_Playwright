@@ -132,12 +132,6 @@ public class LoginStepDefinition {
         logger.info("Address Information has been filled to Address Info successfully");
     }
 
-//
-//    @Then("Check that ACCOUNT message is visible and contains {string} message")
-//    public void check_that_account_message_is_visible(String message) {
-//        awaitUtil.checkAccountMessageIsDisplayed(message);
-//    }
-
     @And("Click the {string} button on Signup_Login Page")
     public void click_button_on_signuplogin_page(String nameButton) {
         String button = commonMethods.refactoredUserFriendlyName(nameButton);
@@ -145,13 +139,4 @@ public class LoginStepDefinition {
 
         logger.info("{} button on Signup_Login Page clicked", button);
     }
-
-//    @And("The URL of the {string} page must be correct")
-//    public void verify_login_url(String page) {
-//        String expectedUrl = String.format("%s%s", ConfigLoader.getProperty("base.url"), page.toLowerCase());
-//        String actualUrl = loginPage.getCurrentURL();
-//
-//        SoftAssertion.get().assertEquals(expectedUrl, actualUrl, "The current URL is not as expected");
-//        SoftAssertion.get().assertAll();
-//    }
 }
