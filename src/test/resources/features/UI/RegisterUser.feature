@@ -1,10 +1,12 @@
 
-@UI @Run @sss @8060
+@UI @Run
 Feature: Register User
 
-  @Run @UI
-  Scenario: Registering and Deleting the user account on the website
+  Background:
     Given Navigate to "Signup / Login" page
+
+  @UI
+  Scenario: Registering and Deleting the user account on the website
     When The user enters registration credentials
     And Click the "SignUp" button on Signup_Login Page
     And Check if the Registration info has been copied to Account Info
@@ -23,9 +25,8 @@ Feature: Register User
     And Click the "Continue" button on Signup_Login Page
     And Check that redirect to "Home" page
 
-  @Run @UI @sss @8050
-  Scenario: Registering the user account, after that try to Login
-    Given Navigate to "Signup / Login" page
+  @UI
+  Scenario: Registering the user account, to do Logout and after that try to Login
     When The user enters registration credentials
     And Click the "SignUp" button on Signup_Login Page
     And Check if the Registration info has been copied to Account Info
@@ -43,11 +44,8 @@ Feature: Register User
     And Click the "Login" button on Signup_Login Page
     Then Check that Logged in as after "SignUp"
 
-
-    @8071
+    @UI
     Scenario: Register User with existing email
-      Given Navigate to "Signup / Login" page
       When The user enters login credentials in the signup section
       And Click the "SignUp" button on Signup_Login Page
-      Then Check error message in the signup section "Email Add3ress already exist!"
-
+      Then Check error message in the signup section "Email Address already exist!"
