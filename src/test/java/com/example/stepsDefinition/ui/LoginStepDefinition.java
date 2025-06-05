@@ -3,6 +3,7 @@ package com.example.stepsDefinition.ui;
 import com.example.dataFaker.DataFaker;
 import com.example.pages.ui.LoginPage;
 import com.example.commonMethods.CommonMethods;
+import com.example.screenshots.ScreenShotConfigurator;
 import com.example.utils.ScenarioContext;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
@@ -16,10 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
+
 
 public class LoginStepDefinition {
     private static final Logger logger = LogManager.getRootLogger();
     ScenarioContext scenarioContext = ScenarioContext.getInstance();
+    ScreenShotConfigurator screenShotConfigurator = new ScreenShotConfigurator();
     CommonMethods commonMethods = new CommonMethods();
     SoftAssert softAssert = new SoftAssert();
     LoginPage loginPage = new LoginPage();
@@ -44,10 +48,26 @@ public class LoginStepDefinition {
 
     @When("The user enters login credentials")
     public void user_enters_login_email_password() {
-        loginPage.fillEmailLogin(scenarioContext.get("email"));
-        loginPage.fillPasswordLogin(scenarioContext.get("password"));
+        String email = scenarioContext.get("email");
+        String password = scenarioContext.get("password");
 
-        logger.info("Login Email : {} \n Login Password : {}", scenarioContext.get("email"), scenarioContext.get("password"));
+        loginPage.fillEmailLogin(email);
+        loginPage.fillPasswordLogin(password);
+
+        logger.info("Login Email : {}", email);
+        logger.info("Login Password : {}", password);
+    }
+
+    @When("The user enters login credentials in the signup section")
+    public void user_login_with_not_existing_credentials() {
+        String name = scenarioContext.get("username");
+        String email = scenarioContext.get("email");
+
+        loginPage.fillNameSignUp(name);
+        loginPage.fillEmailSignUp(email);
+
+        logger.info("Fill name: {} - in the signup section", name);
+        logger.info("Fill email: {} - in the signup section", email);
     }
 
     @When("The user enters credentials after signup")
@@ -60,6 +80,15 @@ public class LoginStepDefinition {
 
         logger.info("Login Email after SignUp : {}", email);
         logger.info("Login Password after SignUp : {}", password);
+    }
+
+    @When("The user login with not existing email {string} and password {string}")
+    public void user_login_with_not_existing_credentials(String email, String password) {
+        loginPage.fillEmailLogin(email);
+        loginPage.fillPasswordLogin(password);
+
+        logger.info("Login Email is: {}", email);
+        logger.info("Login password is: {}", password);
     }
 
     @And("Check if the Registration info has been copied to Account Info")
@@ -85,11 +114,14 @@ public class LoginStepDefinition {
             String actual = actualListOfRegistrationInfo.get(value);
             String expected = expectedListOfRegistrationInfo.get(value);
 
-            softAssert.assertEquals(actual, expected, "Failed to copy value: " + value);
+            if (!actual.equals(expected)) {
+                screenShotConfigurator.takeScreenshot();
+                softAssert.assertEquals(actual, expected, "Failed to copy value: " + value);
+                logger.error("Expected result is: {} -> Actual result is: {}", expected, actual);
+            }
         }
 
         softAssert.assertAll();
-
         logger.info("Registration name and email has been copied to Account Info successfully");
     }
 
@@ -138,5 +170,15 @@ public class LoginStepDefinition {
         loginPage.clickButtonOnSignUpLoginPage(button.toLowerCase());
 
         logger.info("{} button on Signup_Login Page clicked", button);
+    }
+
+    @Then("Check error message in the login section {string}")
+    public void check_error_message_login_section(String expectedMessage) {
+        loginPage.checkErrorMessage("Login", expectedMessage, () -> loginPage.getMessageFromLoginSection());
+    }
+
+    @Then("Check error message in the signup section {string}")
+    public void check_error_message_signup_section(String expectedMessage) {
+        loginPage.checkErrorMessage("SignUp", expectedMessage, () -> loginPage.getMessageFromSignUpSection());
     }
 }

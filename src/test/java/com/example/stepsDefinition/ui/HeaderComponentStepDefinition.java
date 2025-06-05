@@ -15,7 +15,7 @@ import org.testng.asserts.SoftAssert;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class HeaderComponentStepDefinition {
     private static final Logger logger = LogManager.getRootLogger();
@@ -62,24 +62,31 @@ public class HeaderComponentStepDefinition {
     }
 
     @Then("Check that Logged in as after {string}")
-    public void check_that_logged_in_as_after(String username) {
+    public void check_that_logged_in_as_after(String action) {
         String expectedUserName = "";
         String actualUsername = headerComponent.getUserLoggedInAs();
 
-        switch (username.toLowerCase()) {
+        switch (action.toLowerCase()) {
             case "login":
                 expectedUserName = scenarioContext.get("username");
-
-                logger.info("Logged in as: {} - after Login", actualUsername);
                 break;
             case "signup":
                 expectedUserName = scenarioContext.get("signUpName");
-
-                logger.info("Logged in as: {} - after SignUp", actualUsername);
                 break;
             default:
+                throw new IllegalArgumentException("Unsupported action: " + action);
         }
 
-        assertEquals(expectedUserName, actualUsername);
+        if (actualUsername.equals(expectedUserName)) {
+            logger.info("Logged in as: {} - after {}", actualUsername, action);
+        } else {
+        String finalExpectedUserName = expectedUserName;
+        assertThat(actualUsername)
+                    .withFailMessage(() -> {
+                        logger.error("Expected Logged after {} is: {}, but got: {}", action, finalExpectedUserName, actualUsername);
+                        return String.format("Expected Logged after %s is: %s, but got: %s", action, finalExpectedUserName, actualUsername);
+                    })
+                    .isEqualTo(expectedUserName);
+        }
     }
 }

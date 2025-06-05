@@ -2,11 +2,17 @@ package com.example.pages.ui;
 
 import com.example.playwrightManager.PlaywrightManager;
 import com.microsoft.playwright.Locator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
+import java.util.function.Supplier;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LoginPage {
     PlaywrightManager driver = PlaywrightManager.getInstance();
+    private static final Logger logger = LogManager.getRootLogger();
 
     private final Locator emailLogin;
     private final Locator passwordLogin;
@@ -31,7 +37,8 @@ public class LoginPage {
     private final Locator country;
     private final Locator newsletter;
     private final Locator specialOffers;
-    private final Locator message;
+    private final Locator loginFormMessage;
+    private final Locator signupFormMessage;
     private final Map<String, Locator> signUpLoginButtons;
 
     public LoginPage() {
@@ -58,7 +65,8 @@ public class LoginPage {
         this.country = driver.getPage().locator("#country");
         this.newsletter = driver.getPage().locator("#newsletter");
         this.specialOffers = driver.getPage().locator("#optin");
-        this.message = driver.getPage().locator("//p[contains(text(), '')]");
+        this.loginFormMessage = driver.getPage().locator("form[action='/login'] p");
+        this.signupFormMessage = driver.getPage().locator("form[action='/signup'] p");
         this.signUpLoginButtons = Map.of(
                 "login", driver.getPage().locator("[data-qa='login-button']"),
                 "signup", driver.getPage().locator("[data-qa='signup-button']"),
@@ -161,5 +169,28 @@ public class LoginPage {
 
     public void fillMobileNumber(String mobileNumberValue) {
         mobileNumber.fill(mobileNumberValue);
+    }
+
+    public String getMessageFromLoginSection() {
+        return loginFormMessage.textContent();
+    }
+
+    public String getMessageFromSignUpSection() {
+        return signupFormMessage.textContent();
+    }
+
+    public void checkErrorMessage(String sectionName, String expectedMessage, Supplier<String> actualMessageSupplier) {
+        String actualMessage = actualMessageSupplier.get();
+
+        if (actualMessage.equals(expectedMessage)) {
+            logger.info("PASS: {} message matches: '{}'", sectionName, actualMessage);
+        } else {
+            assertThat(actualMessage)
+                    .withFailMessage(() -> {
+                        logger.error("Expected message is: {} -> but got: {}", expectedMessage, actualMessage);
+                        return String.format("Expected message is: %s -> but got: %s", expectedMessage, actualMessage);
+                    })
+                    .isEqualTo(expectedMessage);
+        }
     }
 }

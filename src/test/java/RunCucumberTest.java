@@ -11,7 +11,8 @@ import io.cucumber.junit.CucumberOptions;
 //        monochrome = true,
 //        tags = "@Run and @UI"
 //        tags = "@Run and @API and @11111"
-        tags = "@Run and @sss and @8060"
+        tags = "@Run and @sss and @80400"
+//        tags = "@8071"
 )
 
 public class RunCucumberTest {
