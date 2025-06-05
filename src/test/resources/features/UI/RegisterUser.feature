@@ -42,3 +42,12 @@ Feature: Register User
     When The user enters credentials after signup
     And Click the "Login" button on Signup_Login Page
     Then Check that Logged in as after "SignUp"
+
+
+    @8071
+    Scenario: Register User with existing email
+      Given Navigate to "Signup / Login" page
+      When The user enters login credentials in the signup section
+      And Click the "SignUp" button on Signup_Login Page
+      Then Check error message in the signup section "Email Add3ress already exist!"
+

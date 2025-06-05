@@ -13,10 +13,11 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.testng.asserts.SoftAssert;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ApiLoginStepDefinition {
     private static final Logger logger = LogManager.getLogger("scenario");
@@ -24,7 +25,6 @@ public class ApiLoginStepDefinition {
     DataFaker dataFaker = new DataFaker();
     ScenarioContext scenarioContext = ScenarioContext.getInstance();
     ApiLoginPage apiLoginPage = new ApiLoginPage();
-    SoftAssert softAssert = new SoftAssert();
     private String endpoint;
     private Response response;
 
@@ -177,24 +177,35 @@ public class ApiLoginStepDefinition {
     @Then("The response code from JSON should be {int}")
     public void the_response_code_should_be(int expectedResponseCode) {
         String responseBody = response.getBody().asString();
-
         int actualResponseCode = Integer.parseInt(commonMethods.getValueFromJson(responseBody, "responseCode"));
 
-        softAssert.assertEquals(actualResponseCode, expectedResponseCode);
-        softAssert.assertAll();
-
-        logger.info("The response code from JSON : {}", actualResponseCode);
+        if (actualResponseCode == expectedResponseCode) {
+            logger.info("The response code from JSON: {}", actualResponseCode);
+        } else {
+            assertThat(actualResponseCode)
+                    .withFailMessage(() -> {
+                        logger.error("Expected response code: {}, but got: {}", expectedResponseCode, actualResponseCode);
+                        return String.format("Expected response code: %s, but got: %s", expectedResponseCode, actualResponseCode);
+                    })
+                    .isEqualTo(expectedResponseCode);
+        }
     }
 
     @And("The response message from JSON should be {string}")
     public void the_response_message_should_be(String expectedMessage) {
-            String responseBody = response.getBody().asString();
-            String actualResponseMessage = commonMethods.getValueFromJson(responseBody, "message");
+        String responseBody = response.getBody().asString();
+        String actualResponseMessage = commonMethods.getValueFromJson(responseBody, "message");
 
-            softAssert.assertEquals(expectedMessage, actualResponseMessage);
-            softAssert.assertAll();
-
+        if (actualResponseMessage.equalsIgnoreCase(expectedMessage)) {
             logger.info("Response message from JSON : {}", actualResponseMessage);
+        } else {
+            assertThat(actualResponseMessage)
+                    .withFailMessage(() -> {
+                        logger.error("Expected message: {}, but got: {}", expectedMessage, actualResponseMessage);
+                        return String.format("Expected message: %s, but got: %s", expectedMessage, actualResponseMessage);
+                    })
+                    .isEqualTo(expectedMessage);
+        }
     }
 
     @And("JSON should be contains {string} details")
@@ -226,6 +237,6 @@ public class ApiLoginStepDefinition {
                 throw new IllegalArgumentException("Unsupported method: " + method);
         }
 
-        logger.info("{} request was successfully sent. Status: {}", method.toUpperCase(), response.getStatusCode());
+        logger.info("{} request without parameters was successfully sent. Status: {}", method.toUpperCase(), response.getStatusCode());
     }
 }
