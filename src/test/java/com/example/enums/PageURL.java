@@ -9,7 +9,7 @@ public enum PageURL {
     CART("view_cart"),
     SIGNUP_LOGIN("login"),
     TEST_CASES("test_cases"),
-    API_TESTING("api_list7"),
+    API_TESTING("api_list"),
     VIDEO_TUTORIALS("https://www.youtube.com/c/AutomationExercise"),
     CONTACT_US("contact_us");
 
