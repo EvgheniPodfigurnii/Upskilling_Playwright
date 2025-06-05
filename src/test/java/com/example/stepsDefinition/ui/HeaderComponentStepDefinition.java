@@ -27,7 +27,7 @@ public class HeaderComponentStepDefinition {
     SoftAssert softAssert = new SoftAssert();
     ScreenShotConfigurator screenShotConfigurator = new ScreenShotConfigurator();
 
-    @When("Click each header link and collect the result")
+    @When("Click each header link and check the result")
     public void click_each_header_link_and_collect_result() {
         String expected;
 

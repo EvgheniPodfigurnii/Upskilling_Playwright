@@ -45,7 +45,6 @@ public class ExecutionHook {
         new File(folderPath).mkdirs();
         String logFilePath = folderPath + "/test.log";
 
-//        LoggingContext.setLogFilePath(logFilePath);
         LogConfigurator.configureLogger(logFilePath);
 
         ScenarioContext.getInstance().set("LogPath", folderPath);
