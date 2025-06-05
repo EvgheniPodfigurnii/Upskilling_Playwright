@@ -1,37 +1,36 @@
 
-@Run @sss @8040 @API
+@API @Run
 Feature: Verify Login API
 
-  @Run @sss @8
+  @API
   Scenario: Verify login with valid email and password
     Given The API endpoint is "login"
     When Send a POST request with valid email and password
     Then The response code from JSON should be 200
     And The response message from JSON should be "User exists!"
 
-
-  @Run
+  @API
   Scenario: Verify login without email parameter
     Given The API endpoint is "login"
     When Send a POST request without email parameter
     Then The response code from JSON should be 400
     And The response message from JSON should be "Bad request, email or password parameter is missing in POST request."
 
-  @Run
+  @API
   Scenario: Verify login with not existing user
     Given The API endpoint is "login"
     When Send a POST request with not exist user
     Then The response code from JSON should be 404
     And The response message from JSON should be "User not found!"
 
-  @Run
+  @API
   Scenario: Register new user account
     Given The API endpoint is "create"
     When Create new user account
     Then The response code from JSON should be 201
     And The response message from JSON should be "User created!"
 
-  @Run
+  @API
   Scenario: Delete user account
     Given The API endpoint is "create"
     When Create new user account for DELETE flow
@@ -40,7 +39,7 @@ Feature: Verify Login API
     Then The response code from JSON should be 200
     And The response message from JSON should be "Account deleted!"
 
-  @Run
+  @API
   Scenario: Update user account
     Given The API endpoint is "create"
     When Create new user account for UPDATE flow
@@ -49,7 +48,7 @@ Feature: Verify Login API
     Then The response code from JSON should be 200
     And The response message from JSON should be "User updated!"
 
-  @Run
+  @API
   Scenario: Get user details by email
     Given The API endpoint is "get user details"
     When Get user details

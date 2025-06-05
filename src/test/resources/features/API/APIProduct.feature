@@ -1,17 +1,17 @@
 
-@Run @sss @12 @API @8040
+@API @Run
 Feature: Verify Product API
 
   Background:
     Given The API endpoint is "products list"
 
-  @Run
+  @API
   Scenario: GET request to All Products List
     When Send "GET" request
     Then The response code from JSON should be 200
     And JSON should be contains "products" details
 
-  @Run
+  @API
   Scenario: POST request to All Products List
     When Send "POST" request
     Then The response code from JSON should be 405
