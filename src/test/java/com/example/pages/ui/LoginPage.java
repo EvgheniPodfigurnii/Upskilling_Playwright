@@ -1,6 +1,7 @@
 package com.example.pages.ui;
 
 import com.example.playwrightManager.PlaywrightManager;
+import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Locator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,6 +41,8 @@ public class LoginPage {
     private final Locator loginFormMessage;
     private final Locator signupFormMessage;
     private final Map<String, Locator> signUpLoginButtons;
+    private final Locator emailLoginMessagePopUp = driver.getPage().locator("[data-qa='login-email']");
+    private final Locator passwordLoginMessagePopUp = driver.getPage().locator("[data-qa='login-password']");
 
     public LoginPage() {
         this.emailLogin = driver.getPage().locator("[data-qa='login-email']");
@@ -192,5 +195,23 @@ public class LoginPage {
                     })
                     .isEqualTo(expectedMessage);
         }
+    }
+
+    public Locator getEmailLoginMessagePopUp() {
+        return emailLoginMessagePopUp;
+    }
+
+    public Locator getPasswordLoginMessagePopUp() {
+        return passwordLoginMessagePopUp;
+    }
+
+    public String getPopUpMessage(Locator locator) {
+        ElementHandle handle = locator.elementHandle();
+        driver.getPage().waitForFunction(
+                "el => el.validationMessage && el.validationMessage.length > 0",
+                handle
+        );
+
+        return handle.evaluate("el => el.validationMessage").toString();
     }
 }

@@ -5,6 +5,7 @@ import com.example.pages.ui.LoginPage;
 import com.example.commonMethods.CommonMethods;
 import com.example.screenshots.ScreenShotConfigurator;
 import com.example.utils.ScenarioContext;
+import com.microsoft.playwright.Locator;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.When;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 
@@ -101,12 +103,12 @@ public class LoginStepDefinition {
         listOfRegistrationInfo.add("email");
 
         Map<String, String> expectedListOfRegistrationInfo = Map.of(
-                "name ", scenarioContext.get("signUpName"),
+                "name", scenarioContext.get("signUpName"),
                 "email", scenarioContext.get("signUpEmail")
         );
 
         Map<String, String> actualListOfRegistrationInfo = Map.of(
-                "name ", userNameActualResult,
+                "name", userNameActualResult,
                 "email", userEmailActualResult
         );
 
@@ -180,5 +182,36 @@ public class LoginStepDefinition {
     @Then("Check error message in the signup section {string}")
     public void check_error_message_signup_section(String expectedMessage) {
         loginPage.checkErrorMessage("SignUp", expectedMessage, () -> loginPage.getMessageFromSignUpSection());
+    }
+
+    @Then("Check PopUp {string} message for {string} on Login section")
+    public void check_popup_message_on_login_page(String expectedMessage, String field) {
+        Locator fieldName = null;
+        String actualMessage;
+
+        switch (field.toLowerCase()) {
+            case "email":
+                fieldName = loginPage.getEmailLoginMessagePopUp();
+                break;
+            case "password":
+                fieldName = loginPage.getPasswordLoginMessagePopUp();
+                break;
+            default:
+        }
+
+        assert fieldName != null;
+        actualMessage = loginPage.getPopUpMessage(fieldName);
+
+
+        if (actualMessage.equals(expectedMessage)) {
+            logger.info("PASS: {} message matches: '{}'", field, actualMessage);
+        } else {
+            assertThat(actualMessage)
+                    .withFailMessage(() -> {
+                        logger.error("Expected message: {}, but got: {}", expectedMessage, actualMessage);
+                        return String.format("Expected message: %s, but got: %s", expectedMessage, actualMessage);
+                    })
+                    .isEqualTo(expectedMessage);
+        }
     }
 }

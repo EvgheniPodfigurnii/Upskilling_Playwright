@@ -35,7 +35,29 @@ Feature: User Login
   Examples:
     Examples:
       | email        | password                             | errorMessage                         |
-      | test@abc.com |                                      | Password is required                 |
-      |              | P@ssword123                          | Email address is required            |
       | a@b.co       | short                                | Your email or password is incorrect! |
       | user@abc.com | veryveryveryveryveryverylongpassword | Your email or password is incorrect! |
+
+  @UI
+  Scenario: User login with not existing credentials to check popup messages without '@'
+    When The user login with not existing email "abc" and password ""
+    And Click the "Login" button on Signup_Login Page
+    Then Check PopUp "Please include an '@' in the email address. 'abc' is missing an '@'." message for "email" on Login section
+
+  @UI
+  Scenario: User login with not existing credentials to check popup messages with only "abc@"
+    When The user login with not existing email "abc@" and password ""
+    And Click the "Login" button on Signup_Login Page
+    Then Check PopUp "Please enter a part following '@'. 'abc@' is incomplete." message for "email" on Login section
+
+  @UI
+  Scenario: User login with not existing credentials to check popup messages without email
+    When The user login with not existing email "" and password "passw0rd"
+    And Click the "Login" button on Signup_Login Page
+    Then Check PopUp "Please fill out this field." message for "email" on Login section
+
+  @UI
+  Scenario: User login with not existing credentials to check popup messages without password
+    When The user login with not existing email "abc@bca" and password ""
+    And Click the "Login" button on Signup_Login Page
+    Then Check PopUp "Please fill out this field." message for "password" on Login section
