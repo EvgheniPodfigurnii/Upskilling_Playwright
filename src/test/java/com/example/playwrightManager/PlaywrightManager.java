@@ -24,10 +24,12 @@ public class PlaywrightManager {
             case "safari":
                 browser = playwright.webkit().launch(new BrowserType.LaunchOptions().setHeadless(false));
                 break;
-            case "chrome":
             case "edge":
+                browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setChannel("msedge").setHeadless(false));
+                break;
+            case "chrome":
             default:
-                browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
+                browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setChannel("chrome").setHeadless(false));
                 break;
         }
 

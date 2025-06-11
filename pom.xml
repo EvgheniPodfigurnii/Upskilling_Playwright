@@ -96,12 +96,6 @@
             <version>3.27.3</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>io.qameta.allure</groupId>
-            <artifactId>allure-cucumber7-jvm</artifactId>
-            <version>2.24.0</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -119,13 +113,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
-            </plugin>
-
-            <!-- Allure Report Plugin -->
-            <plugin>
-                <groupId>io.qameta.allure</groupId>
-                <artifactId>allure-maven</artifactId>
-                <version>2.11.2</version>
             </plugin>
         </plugins>
     </build>

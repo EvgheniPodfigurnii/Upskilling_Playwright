@@ -7,7 +7,6 @@ import com.example.utils.ScenarioContext;
 import io.cucumber.java.Before;
 import io.cucumber.java.After;
 import io.cucumber.java.Scenario;
-import io.qameta.allure.Allure;
 
 import java.io.*;
 
@@ -51,14 +50,11 @@ public class ExecutionHook {
         ScenarioContext.getInstance().set("LogPath", folderPath);
     }
 
-
     @After(order = 2)
     public void afterScenario(Scenario scenario) {
         if (scenario.isFailed() && scenario.getSourceTagNames().stream().anyMatch(tag -> tag.equalsIgnoreCase("@ui"))) {
             ScreenShotConfigurator screenShotConfigurator = new ScreenShotConfigurator();
             screenShotConfigurator.takeScreenshot();
-
-            Allure.addAttachment("Failure Screenshot", new ByteArrayInputStream(screenShotConfigurator.takeScreenshotAndReturnByte()));
         }
     }
 

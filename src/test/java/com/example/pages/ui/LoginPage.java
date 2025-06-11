@@ -78,6 +78,14 @@ public class LoginPage {
         );
     }
 
+    public Locator getEmailLoginMessagePopUp() {
+        return emailLoginMessagePopUp;
+    }
+
+    public Locator getPasswordLoginMessagePopUp() {
+        return passwordLoginMessagePopUp;
+    }
+
     public void fillEmailLogin(String email) {
         emailLogin.fill(email);
     }
@@ -195,14 +203,6 @@ public class LoginPage {
                     })
                     .isEqualTo(expectedMessage);
         }
-    }
-
-    public Locator getEmailLoginMessagePopUp() {
-        return emailLoginMessagePopUp;
-    }
-
-    public Locator getPasswordLoginMessagePopUp() {
-        return passwordLoginMessagePopUp;
     }
 
     public String getPopUpMessage(Locator locator) {
