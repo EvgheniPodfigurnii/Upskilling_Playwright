@@ -1,8 +1,8 @@
 package com.example.stepsDefinition.ui;
 
-import com.example.dataFaker.DataFaker;
+import com.example.enums.RegistrationForm;
 import com.example.pages.ui.LoginPage;
-import com.example.commonMethods.CommonMethods;
+import com.example.helper.CommonMethods;
 import com.example.screenshots.ScreenShotConfigurator;
 import com.example.utils.ScenarioContext;
 import com.microsoft.playwright.Locator;
@@ -19,23 +19,21 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 
 public class LoginStepDefinition {
     private static final Logger logger = LogManager.getRootLogger();
-    ScenarioContext scenarioContext = ScenarioContext.getInstance();
-    ScreenShotConfigurator screenShotConfigurator = new ScreenShotConfigurator();
-    CommonMethods commonMethods = new CommonMethods();
-    SoftAssert softAssert = new SoftAssert();
-    LoginPage loginPage = new LoginPage();
-    DataFaker dataFaker = new DataFaker();
+    private final ScenarioContext scenarioContext = ScenarioContext.getInstance();
+    private final ScreenShotConfigurator screenShotConfigurator = new ScreenShotConfigurator();
+    private final CommonMethods commonMethods = new CommonMethods();
+    private final SoftAssert softAssert = new SoftAssert();
+    private final LoginPage loginPage = new LoginPage();
 
     @When("The user enters registration credentials")
     public void user_enters_registration_username_email() {
-        String signUpName = dataFaker.createName();
-        String signUpEmail = dataFaker.createEmail();
-        String signUpPassword = dataFaker.createPassword();
+        String signUpName = RegistrationForm.NAME.getValue();
+        String signUpEmail = RegistrationForm.EMAIL.getValue();
+        String signUpPassword = RegistrationForm.PASSWORD.getValue();
 
         loginPage.fillNameSignUp(signUpName);
         loginPage.fillEmailSignUp(signUpEmail);
@@ -131,11 +129,11 @@ public class LoginStepDefinition {
     public void fill_account_info(DataTable table) {
         Map<String, String> data = table.asMap(String.class, String.class);
 
-        loginPage.chooseTitle();
+        loginPage.chooseTitle(RegistrationForm.TITLE.getValue());
         loginPage.fillPassword(scenarioContext.get("signUpPassword"));
-        loginPage.fillDay(dataFaker.createBirthday("day"));
-        loginPage.fillMonth(dataFaker.createBirthday("month"));
-        loginPage.fillYear(dataFaker.createBirthday("year"));
+        loginPage.fillDay(RegistrationForm.BIRTHDAY.getValue());
+        loginPage.fillMonth(RegistrationForm.BIRTHMONTH.getValue());
+        loginPage.fillYear(RegistrationForm.BIRTHYEAR.getValue());
 
         if (data.get("Newsletter").equalsIgnoreCase("yes")) {
             loginPage.clickNewsletter();
@@ -149,19 +147,17 @@ public class LoginStepDefinition {
     }
 
     @And("The user fills the address information:")
-    public void fill_address_info(DataTable table) {
-        Map<String, String> data = table.asMap(String.class, String.class);
-
-        loginPage.fillFirstName(dataFaker.createFirstName());
-        loginPage.fillLastName(dataFaker.createLastName());
-        loginPage.fillCompany(dataFaker.createCompany());
-        loginPage.fillAddress1(dataFaker.createAddress());
-        loginPage.fillAddress2(dataFaker.createAddress2());
-        loginPage.fillCountry(data.get("Country"));
-        loginPage.fillState(dataFaker.createState());
-        loginPage.fillCity(dataFaker.createCity());
-        loginPage.fillZipCode(dataFaker.createZipCode());
-        loginPage.fillMobileNumber(dataFaker.createMobilePhone());
+    public void fill_address_info() {
+        loginPage.fillFirstName(RegistrationForm.FIRSTNAME.getValue());
+        loginPage.fillLastName(RegistrationForm.LASTNAME.getValue());
+        loginPage.fillCompany(RegistrationForm.COMPANY.getValue());
+        loginPage.fillAddress1(RegistrationForm.ADDRESS1.getValue());
+        loginPage.fillAddress2(RegistrationForm.ADDRESS2.getValue());
+        loginPage.fillCountry(RegistrationForm.COUNTRY.getValue());
+        loginPage.fillState(RegistrationForm.STATE.getValue());
+        loginPage.fillCity(RegistrationForm.CITY.getValue());
+        loginPage.fillZipCode(RegistrationForm.ZIPCODE.getValue());
+        loginPage.fillMobileNumber(RegistrationForm.MOBILENUMBER.getValue());
 
         logger.info("Address Information has been filled to Address Info successfully");
     }
@@ -174,14 +170,9 @@ public class LoginStepDefinition {
         logger.info("{} button on Signup_Login Page clicked", button);
     }
 
-    @Then("Check error message in the login section {string}")
-    public void check_error_message_login_section(String expectedMessage) {
-        loginPage.checkErrorMessage("Login", expectedMessage, () -> loginPage.getMessageFromLoginSection());
-    }
-
-    @Then("Check error message in the signup section {string}")
-    public void check_error_message_signup_section(String expectedMessage) {
-        loginPage.checkErrorMessage("SignUp", expectedMessage, () -> loginPage.getMessageFromSignUpSection());
+    @Then("The error message {string} should be displayed in the {string} section")
+    public void check_that_appears_error_message(String expectedMessage , String sectionName) {
+        loginPage.checkErrorMessage(sectionName, expectedMessage, loginPage.getMessageFromLoginSignupSection(sectionName));
     }
 
     @Then("Check PopUp {string} message for {string} on Login section")

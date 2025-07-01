@@ -2,7 +2,7 @@ package com.example.stepsDefinition.ui;
 
 import com.example.playwrightManager.PlaywrightManager;
 import com.example.configurations.ConfigLoader;
-import com.example.commonMethods.CommonMethods;
+import com.example.helper.CommonMethods;
 import com.example.enums.PageURL;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -14,8 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CommonStepDefinition {
     private static final Logger logger = LogManager.getRootLogger();
-    PlaywrightManager driver = PlaywrightManager.getInstance();
-    CommonMethods commonMethods = new CommonMethods();
+    private final PlaywrightManager driver = PlaywrightManager.getInstance();
+    private final CommonMethods commonMethods = new CommonMethods();
 
     @Given("Navigate to {string} page")
     public void navigateToPage(String page) {

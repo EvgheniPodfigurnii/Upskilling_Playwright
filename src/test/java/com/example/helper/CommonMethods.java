@@ -1,4 +1,4 @@
-package com.example.commonMethods;
+package com.example.helper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

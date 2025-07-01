@@ -14,9 +14,4 @@ public class ScreenShotConfigurator {
         playwrightManager.getPage().screenshot(
                 new Page.ScreenshotOptions().setPath(Paths.get(String.format("%s/%s", scenarioContext.get("LogPath"), String.format("screenshot%s.png", System.currentTimeMillis())))).setFullPage(true));
     }
-
-    public byte[] takeScreenshotAndReturnByte() {
-        return  playwrightManager.getPage().screenshot(
-                new Page.ScreenshotOptions().setPath(Paths.get(String.format("%s/%s", scenarioContext.get("LogPath"), String.format("screenshot%s.png", System.currentTimeMillis())))).setFullPage(true));
-    }
 }

@@ -1,9 +1,9 @@
 package com.example.stepsDefinition.api;
 
-import com.example.commonMethods.CommonMethods;
+import com.example.enums.APIEndPoint;
+import com.example.helper.CommonMethods;
 import com.example.configurations.ConfigLoader;
-import com.example.dataFaker.DataFaker;
-import com.example.pages.api.ApiLoginPage;
+import com.example.pages.api.ApiLogin;
 import com.example.utils.ScenarioContext;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -21,92 +21,75 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ApiLoginStepDefinition {
     private static final Logger logger = LogManager.getLogger("scenario");
-    CommonMethods commonMethods = new CommonMethods();
-    DataFaker dataFaker = new DataFaker();
-    ScenarioContext scenarioContext = ScenarioContext.getInstance();
-    ApiLoginPage apiLoginPage = new ApiLoginPage();
+    private final CommonMethods commonMethods = new CommonMethods();
+    private final ScenarioContext scenarioContext = ScenarioContext.getInstance();
+    private final ApiLogin apiLogin = new ApiLogin();
     private String endpoint;
-    private Response response;
 
     @Given("The API endpoint is {string}")
-    public void the_api_endpoint_is(String link) {
-        String linkAfterRefactoring = commonMethods.refactoredUserFriendlyName(link);
-        endpoint = String.format("%s%s", ConfigLoader.getProperty("base.url"), ConfigLoader.getProperty(String.format("api.%s", linkAfterRefactoring)));
+    public void the_api_endpoint_is(String endPointName) {
+        APIEndPoint apiEndPoint = APIEndPoint.valueOf(endPointName.toUpperCase());
+        endpoint = String.format("%s%s", ConfigLoader.getProperty("base.url"), APIEndPoint.getAPIEndPoint(apiEndPoint));
 
         logger.info("API endpoint is: {}", endpoint);
     }
 
-    @When("Send a POST request with valid email and password")
-    public void send_a_post_request_with_email_and_password() {
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", "application/json");
-
+    @When("Send a POST request with {string} and {string}")
+    public void send_a_post_request_with_email_and_password(String email, String password) {
         Map<String, String> params = new HashMap<>();
-        params.put("email", ConfigLoader.getProperty("email"));
-        params.put("password", ConfigLoader.getProperty("password"));
 
+        if (email.isEmpty()) {
+            params.put("password", password);
+        } else if (password.isEmpty()) {
+            params.put("email", email);
+        } else {
+            params.put("email", email);
+            params.put("password", password);
+        }
 
-        response = RestAssured.given()
+        Response response = RestAssured.given()
                 .headers("Content-Type", "application/x-www-form-urlencoded")
                 .formParams(params)
                 .when()
                 .post(endpoint);
 
-        logger.info("Response after POST request with valid email and password is : {}", response.getStatusCode());
-    }
+        scenarioContext.set("responseCode", String.valueOf(response));
+        scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
 
-    @When("Send a POST request without email parameter")
-    public void send_a_post_request_without_email_parameter() {
-        Map<String, String> params = new HashMap<>();
-        params.put("password", ConfigLoader.getProperty("password"));
-
-        response = RestAssured.given()
-                .formParams(params)
-                .when()
-                .post(endpoint);
-
-        logger.info("Response after POST request without email parameter is : {}", response.getStatusCode());
-    }
-
-    @When("Send a POST request with not exist user")
-    public void send_a_post_request_without_not_exist_user() {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", dataFaker.createEmail());
-        params.put("password", dataFaker.createPassword());
-
-        response = RestAssured.given()
-                .formParams(params)
-                .when()
-                .post(endpoint);
-
-        logger.info("Response after POST request with not exist user is : {}", response.getStatusCode());
+        logger.info("Response after POST request with email: {} and password: {} is : {}",email, password, scenarioContext.get("responseCode"));
     }
 
     @When("Create new user account")
     public void create_new_user_account() {
-        Map<String, String> params = apiLoginPage.generateUserParams(false);
+        Map<String, String> params = apiLogin.generateUserParams(false);
 
-        response = RestAssured.given()
+        Response response = RestAssured.given()
                 .formParams(params)
                 .when()
                 .post(endpoint);
 
-        logger.info("Response after Create new user account is : {}", response.getStatusCode());
+        scenarioContext.set("responseCode", String.valueOf(response));
+        scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
+
+        logger.info("Response after Create new user account is : {}", scenarioContext.get("responseCode"));
     }
 
     @When("Create new user account for DELETE flow")
     public void create_new_user_account_delete_flow() {
-        Map<String, String> params = apiLoginPage.generateUserParams(false);
+        Map<String, String> params = apiLogin.generateUserParams(false);
 
-        response = RestAssured.given()
+        Response response = RestAssured.given()
                 .formParams(params)
                 .when()
                 .post(endpoint);
 
+        scenarioContext.set("responseCode", String.valueOf(response));
+        scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
+
         scenarioContext.set("apiEmail", params.get("email"));
         scenarioContext.set("apiPassword", params.get("password"));
 
-        logger.info("Response after Create new user account for DELETE flow is : {}", response.getStatusCode());
+        logger.info("Response after Create new user account for DELETE flow is : {}", scenarioContext.get("responseCode"));
     }
 
     @And("DELETE user account")
@@ -115,34 +98,43 @@ public class ApiLoginStepDefinition {
         params.put("email", scenarioContext.get("apiEmail"));
         params.put("password", scenarioContext.get("apiPassword"));
 
-        response = RestAssured.given()
+        Response response = RestAssured.given()
                 .formParams(params)
                 .when()
                 .delete(endpoint);
 
-        logger.info("Response after DELETE user account is : {}", response.getStatusCode());
+        scenarioContext.set("responseCode", String.valueOf(response));
+        scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
+
+        logger.info("Response after DELETE user account is : {}", scenarioContext.get("responseCode"));
     }
 
     @When("Create new user account for UPDATE flow")
     public void create_new_user_account_update_flow() {
-        Map<String, String> params = apiLoginPage.generateUserParams(true);
+        Map<String, String> params = apiLogin.generateUserParams(true);
 
-        response = RestAssured.given()
+        Response response = RestAssured.given()
                 .formParams(params)
                 .when()
                 .post(endpoint);
 
-        logger.info("Response after Create new user account for UPDATE flow is : {}", response.getStatusCode());
+        scenarioContext.set("responseCode", String.valueOf(response));
+        scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
+
+        logger.info("Response after Create new user account for UPDATE flow is : {}", scenarioContext.get("responseCode"));
     }
 
     @When("Get user details")
     public void get_user_details() {
-        response = RestAssured.given()
-                .queryParam("email", ConfigLoader.getProperty("email"))
+        Response response = RestAssured.given()
+                .queryParam("email", scenarioContext.get("email"))
                 .when()
                 .get(endpoint);
 
-        logger.info("Response after Get user details is : {}", response.getStatusCode());
+        scenarioContext.set("responseCode", String.valueOf(response));
+        scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
+
+        logger.info("Response after Get user details is : {}", scenarioContext.get("responseCode"));
     }
 
     @And("Update user account")
@@ -166,17 +158,20 @@ public class ApiLoginStepDefinition {
         params.put("city", scenarioContext.get("apicity"));
         params.put("mobile_number", scenarioContext.get("apimobile_number"));
 
-        response = RestAssured.given()
+        Response response = RestAssured.given()
                 .formParams(params)
                 .when()
                 .put(endpoint);
 
-        logger.info("Response after Update user account is : {}", response.getStatusCode());
+        scenarioContext.set("responseCode", String.valueOf(response));
+        scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
+
+        logger.info("Response after Update user account is : {}", scenarioContext.get("responseCode"));
     }
 
     @Then("The response code from JSON should be {int}")
     public void the_response_code_should_be(int expectedResponseCode) {
-        String responseBody = response.getBody().asString();
+        String responseBody = scenarioContext.get("responseGetBody");
         int actualResponseCode = Integer.parseInt(commonMethods.getValueFromJson(responseBody, "responseCode"));
 
         if (actualResponseCode == expectedResponseCode) {
@@ -193,7 +188,7 @@ public class ApiLoginStepDefinition {
 
     @And("The response message from JSON should be {string}")
     public void the_response_message_should_be(String expectedMessage) {
-        String responseBody = response.getBody().asString();
+        String responseBody = scenarioContext.get("responseGetBody");
         String actualResponseMessage = commonMethods.getValueFromJson(responseBody, "message");
 
         if (actualResponseMessage.equalsIgnoreCase(expectedMessage)) {
@@ -210,7 +205,7 @@ public class ApiLoginStepDefinition {
 
     @And("JSON should be contains {string} details")
     public void json_user_details(String object) {
-        String responseBody = response.getBody().asString();
+        String responseBody = scenarioContext.get("responseGetBody");
         String actualResponseMessage = commonMethods.getValueFromJson(responseBody, object);
 
         if (!actualResponseMessage.isEmpty()) {
@@ -222,6 +217,8 @@ public class ApiLoginStepDefinition {
 
     @When("Send {string} request")
     public void send_request(String method) {
+        Response response;
+
         switch (method.toUpperCase()) {
             case "GET":
                 response = RestAssured.given()
@@ -237,6 +234,9 @@ public class ApiLoginStepDefinition {
                 throw new IllegalArgumentException("Unsupported method: " + method);
         }
 
-        logger.info("{} request without parameters was successfully sent. Status: {}", method.toUpperCase(), response.getStatusCode());
+        scenarioContext.set("responseCode", String.valueOf(response));
+        scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
+
+        logger.info("{} request without parameters was successfully sent. Status: {}", method.toUpperCase(), scenarioContext.get("responseCode"));
     }
 }

@@ -1,56 +1,43 @@
 
-@API @Run
+@API
 Feature: Verify Login API
 
-  @API
-  Scenario: Verify login with valid email and password
-    Given The API endpoint is "login"
-    When Send a POST request with valid email and password
-    Then The response code from JSON should be 200
-    And The response message from JSON should be "User exists!"
+  Scenario Outline: Verify login with valid email and password
+    Given The API endpoint is "<endpoint>"
+    When Send a POST request with "<email>" and "<password>"
+    Then The response code from JSON should be <responseCode>
+    And The response message from JSON should be "<responseMessage>"
 
-  @API
-  Scenario: Verify login without email parameter
-    Given The API endpoint is "login"
-    When Send a POST request without email parameter
-    Then The response code from JSON should be 400
-    And The response message from JSON should be "Bad request, email or password parameter is missing in POST request."
+    Examples:
+    | endpoint | email                  | password     | responseCode | responseMessage                                                      |
+    | LOGIN    | newemail8@newemail.com | newspass123! | 200          | User exists!                                                         |
+    | LOGIN    |                        | newspass123! | 400          | Bad request, email or password parameter is missing in POST request. |
+    | LOGIN    | notexistuser@email.com | newpass12!!! | 404          | User not found!                                                      |
 
-  @API
-  Scenario: Verify login with not existing user
-    Given The API endpoint is "login"
-    When Send a POST request with not exist user
-    Then The response code from JSON should be 404
-    And The response message from JSON should be "User not found!"
-
-  @API
   Scenario: Register new user account
-    Given The API endpoint is "create"
+    Given The API endpoint is "CREATE"
     When Create new user account
     Then The response code from JSON should be 201
     And The response message from JSON should be "User created!"
 
-  @API
   Scenario: Delete user account
-    Given The API endpoint is "create"
+    Given The API endpoint is "CREATE"
     When Create new user account for DELETE flow
-    And The API endpoint is "delete"
+    And The API endpoint is "DELETE"
     And DELETE user account
     Then The response code from JSON should be 200
     And The response message from JSON should be "Account deleted!"
 
-  @API
   Scenario: Update user account
-    Given The API endpoint is "create"
+    Given The API endpoint is "CREATE"
     When Create new user account for UPDATE flow
-    And The API endpoint is "update"
+    And The API endpoint is "UPDATE"
     And Update user account
     Then The response code from JSON should be 200
     And The response message from JSON should be "User updated!"
 
-  @API
   Scenario: Get user details by email
-    Given The API endpoint is "get user details"
+    Given The API endpoint is "GET_USER_DETAILS"
     When Get user details
     Then The response code from JSON should be 200
     And JSON should be contains "user" details

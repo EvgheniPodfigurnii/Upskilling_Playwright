@@ -1,6 +1,5 @@
 package com.example.utils;
 
-import com.example.configurations.ConfigLoader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,10 +9,8 @@ public class ScenarioContext {
     private final Map<String, String> context = new HashMap<>();
 
 
-    private ScenarioContext() {
-        context.put("username", ConfigLoader.getProperty("username"));
-        context.put("email", ConfigLoader.getProperty("email"));
-        context.put("password", ConfigLoader.getProperty("password"));
+    public void setExistUser(String key, String value) {
+        context.put(key, value);
     }
 
     public static ScenarioContext getInstance() {

@@ -1,33 +1,32 @@
 
 package com.example.playwrightManager;
 
-import com.example.configurations.ConfigLoader;
 import com.microsoft.playwright.*;
 
 public class PlaywrightManager {
-    String browserName = ConfigLoader.getProperty("browser");
-
     private static PlaywrightManager instance;
     private static Playwright playwright;
     private static Browser browser;
     private static BrowserContext context;
     private static Page page;
 
-
     private PlaywrightManager() {
+    }
+
+    public void LaunchBrowser(String browserName) {
         playwright = Playwright.create();
 
-        switch (browserName.toLowerCase()) {
-            case "firefox":
+        switch (browserName) {
+            case "FIREFOX":
                 browser = playwright.firefox().launch(new BrowserType.LaunchOptions().setHeadless(false));
                 break;
-            case "safari":
+            case "SAFARI":
                 browser = playwright.webkit().launch(new BrowserType.LaunchOptions().setHeadless(false));
                 break;
-            case "edge":
+            case "EDGE":
                 browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setChannel("msedge").setHeadless(false));
                 break;
-            case "chrome":
+            case "CHROME":
             default:
                 browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setChannel("chrome").setHeadless(false));
                 break;

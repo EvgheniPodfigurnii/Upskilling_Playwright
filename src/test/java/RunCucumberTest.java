@@ -7,7 +7,7 @@ import io.cucumber.junit.CucumberOptions;
         features = "src/test/resources/features",
         glue = "com.example",
         plugin = {"pretty", "html:target/cucumber-report.html"},
-        tags = "@Run and @UI or @API"
+        tags = "@UI or @API"
 )
 
 public class RunCucumberTest {

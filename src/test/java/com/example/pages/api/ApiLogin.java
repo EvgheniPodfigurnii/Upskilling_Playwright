@@ -6,7 +6,7 @@ import com.example.utils.ScenarioContext;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ApiLoginPage {
+public class ApiLogin {
     ScenarioContext scenarioContext = ScenarioContext.getInstance();
     DataFaker dataFaker = new DataFaker();
 

@@ -19,7 +19,6 @@ public class LoginPage {
     private final Locator passwordLogin;
     private final Locator nameSignUp;
     private final Locator emailSignUp;
-    private final Locator title;
     private final Locator name;
     private final Locator email;
     private final Locator password;
@@ -49,7 +48,6 @@ public class LoginPage {
         this.passwordLogin = driver.getPage().locator("[data-qa='login-password']");
         this.nameSignUp = driver.getPage().locator("[data-qa='signup-name']");
         this.emailSignUp = driver.getPage().locator("[data-qa='signup-email']");
-        this.title = driver.getPage().locator("input[type='radio'][value='Mr']");
         this.name = driver.getPage().locator("#name");
         this.email = driver.getPage().locator("#email");
         this.password = driver.getPage().locator("#password");
@@ -106,8 +104,11 @@ public class LoginPage {
         signUpLoginButtons.get(buttonName).click();
     }
 
-    public void chooseTitle() {
-        title.click();
+    public void chooseTitle(String titleValue) {
+        driver.getPage()
+                .locator("label:has-text('" + titleValue + "')")
+                .locator("input[type='radio']")
+                .click();
     }
 
     public String getRegistrationNameWhichCopiedToAccountInformation() {
@@ -182,12 +183,12 @@ public class LoginPage {
         mobileNumber.fill(mobileNumberValue);
     }
 
-    public String getMessageFromLoginSection() {
-        return loginFormMessage.textContent();
-    }
-
-    public String getMessageFromSignUpSection() {
-        return signupFormMessage.textContent();
+    public Supplier<String> getMessageFromLoginSignupSection(String section) {
+        return switch (section.toLowerCase()) {
+            case "login" -> loginFormMessage::textContent;
+            case "signup" -> signupFormMessage::textContent;
+            default -> throw new IllegalArgumentException("Unsupported section: " + section);
+        };
     }
 
     public void checkErrorMessage(String sectionName, String expectedMessage, Supplier<String> actualMessageSupplier) {

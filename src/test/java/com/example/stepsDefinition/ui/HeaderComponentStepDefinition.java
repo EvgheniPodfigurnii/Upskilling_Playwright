@@ -1,8 +1,8 @@
 package com.example.stepsDefinition.ui;
 
+import com.example.helper.CommonMethods;
 import com.example.playwrightManager.PlaywrightManager;
 import com.example.configurations.ConfigLoader;
-import com.example.commonMethods.CommonMethods;
 import com.example.enums.PageURL;
 import com.example.screenshots.ScreenShotConfigurator;
 import com.example.sections.HeaderComponent;
