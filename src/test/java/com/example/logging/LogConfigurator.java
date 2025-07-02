@@ -17,6 +17,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class LogConfigurator {
+    static String date;
+    static String time;
+    static boolean firstRun = true;
     static ScenarioContext scenarioContext = ScenarioContext.getInstance();
 
     public static void configureLogger(String logFilePath) {
@@ -52,9 +55,13 @@ public class LogConfigurator {
     }
 
     public static void getLoggingPath(Scenario scenario, String typeOfTest) {
+        if (firstRun) {
             LocalDateTime now = LocalDateTime.now();
-            String date = now.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-            String time = now.format(DateTimeFormatter.ofPattern("HH_mm_ss"));
+            date = now.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+            time = now.format(DateTimeFormatter.ofPattern("HH_mm_ss"));
+
+            firstRun = false;
+        }
 
         String rawUri = scenario.getUri().toString();
         String featureName = new File(rawUri).getName().replace(".feature", "").replaceAll("[^a-zA-Z0-9.-]", "_");
