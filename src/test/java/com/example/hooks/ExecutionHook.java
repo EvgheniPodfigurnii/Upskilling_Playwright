@@ -34,8 +34,10 @@ public class ExecutionHook {
     }
 
     @After(value = "@UI", order = 2)
-    public void afterScenario() {
+    public void afterScenario(Scenario scenario) {
+        if (scenario.isFailed()) {
             screenShotConfigurator().takeScreenshot();
+        }
     }
 
     @After(value = "@UI", order = 1)
