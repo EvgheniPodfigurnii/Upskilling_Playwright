@@ -1,12 +1,12 @@
 package com.example.stepsDefinition.ui;
 
-import com.example.helper.CommonMethods;
-import com.example.playwrightManager.PlaywrightManager;
 import com.example.configurations.ConfigLoader;
 import com.example.enums.PageURL;
-import com.example.screenshots.ScreenShotConfigurator;
+import com.example.helper.CommonMethods;
+import com.example.playwrightManager.PlaywrightManager;
 import com.example.sections.HeaderComponent;
 import com.example.utils.ScenarioContext;
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.apache.logging.log4j.LogManager;
@@ -21,21 +21,28 @@ public class HeaderComponentStepDefinition {
     private static final Logger logger = LogManager.getRootLogger();
     ScenarioContext scenarioContext = ScenarioContext.getInstance();
     PlaywrightManager driver = PlaywrightManager.getInstance();
-    HeaderComponent headerComponent = new HeaderComponent(driver);
-    Map<String, String> actualUrls = new HashMap<>();
+    HeaderComponent headerComponent = new HeaderComponent();
     CommonMethods commonMethods = new CommonMethods();
     SoftAssert softAssert = new SoftAssert();
-    ScreenShotConfigurator screenShotConfigurator = new ScreenShotConfigurator();
 
-    @When("Click each header link and check the result")
-    public void click_each_header_link_and_collect_result() {
-        String expected;
+    @When("Click each header link")
+    public void click_each_header_link(DataTable dataTable) {
+        List<String> headerLinks = dataTable.asList();
 
-        for (String link : PageURL.keyLabelHeaderLinks.values().stream().sorted().toList()) {
+        for (String link : headerLinks) {
             headerComponent.clickHeaderLink(link);
-            actualUrls.put(link, driver.getPage().url());
+            scenarioContext.set(link, driver.getPage().url());
+        }
+    }
 
-            String actual = actualUrls.get(link);
+    @Then("Check the results after click header links")
+    public void check_the_results() {
+        String expected;
+        Collection<String> headerLinks = PageURL.keyLabelHeaderLinks.values();
+
+        for (String link : headerLinks) {
+            String actual = scenarioContext.get(link.toUpperCase());
+
             if (link.equalsIgnoreCase(PageURL.VIDEO_TUTORIALS.name())) {
                 expected = PageURL.VIDEO_TUTORIALS.getPath();
             } else {
@@ -43,14 +50,14 @@ public class HeaderComponentStepDefinition {
             }
 
             if (!actual.equalsIgnoreCase(expected)) {
-                screenShotConfigurator.takeScreenshot();
                 softAssert.assertEquals(actual, expected,  "Failed at link: " + link);
                 logger.error("Expected result is: {} -> Actual result is: {}", expected, actual);
+            } else {
+                logger.info("All header references follow the correct path");
             }
         }
 
         softAssert.assertAll();
-        logger.info("Clicked all header links");
     }
 
     @When("Click {string} header link")
