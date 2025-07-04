@@ -26,7 +26,7 @@ public class HeaderComponentStepDefinition {
     SoftAssert softAssert = new SoftAssert();
 
     @When("Click each header link")
-    public void click_each_header_link(DataTable dataTable) {
+    public void clickEachHeaderLink(DataTable dataTable) {
         List<String> headerLinks = dataTable.asList();
 
         for (String link : headerLinks) {
@@ -36,7 +36,7 @@ public class HeaderComponentStepDefinition {
     }
 
     @Then("Check the results after click header links")
-    public void check_the_results() {
+    public void checkTheResults() {
         String expected;
         Collection<String> headerLinks = PageURL.keyLabelHeaderLinks.values();
 
@@ -61,7 +61,7 @@ public class HeaderComponentStepDefinition {
     }
 
     @When("Click {string} header link")
-    public void click_header_link(String linkName) {
+    public void clickHeaderLink(String linkName) {
         String headerLink = commonMethods.refactoredUserFriendlyName(linkName);
         headerComponent.clickHeaderLink(headerLink);
 
@@ -69,7 +69,7 @@ public class HeaderComponentStepDefinition {
     }
 
     @Then("Check that Logged in as after {string}")
-    public void check_that_logged_in_as_after(String action) {
+    public void checkThatLoggedInAsAfter(String action) {
         String expectedUserName = "";
         String actualUsername = headerComponent.getUserLoggedInAs();
 

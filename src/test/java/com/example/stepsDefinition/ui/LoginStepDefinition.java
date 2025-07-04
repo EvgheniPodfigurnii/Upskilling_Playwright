@@ -30,7 +30,7 @@ public class LoginStepDefinition {
     private final LoginPage loginPage = new LoginPage();
 
     @When("The user enters registration credentials")
-    public void user_enters_registration_username_email() {
+    public void userEntersRegistrationUsernameEmail() {
         String signUpName = RegistrationForm.NAME.getValue();
         String signUpEmail = RegistrationForm.EMAIL.getValue();
         String signUpPassword = RegistrationForm.PASSWORD.getValue();
@@ -47,7 +47,7 @@ public class LoginStepDefinition {
     }
 
     @When("The user enters login credentials")
-    public void user_enters_login_email_password() {
+    public void userEntersLoginEmailPassword() {
         String email = scenarioContext.get("email");
         String password = scenarioContext.get("password");
 
@@ -59,7 +59,7 @@ public class LoginStepDefinition {
     }
 
     @When("The user enters login credentials in the signup section")
-    public void user_login_with_not_existing_credentials() {
+    public void userLoginWithNotExistingCredentials() {
         String name = scenarioContext.get("username");
         String email = scenarioContext.get("email");
 
@@ -71,7 +71,7 @@ public class LoginStepDefinition {
     }
 
     @When("The user enters credentials after signup")
-    public void user_enters_credentials_after_signup() {
+    public void userEntersCredentialsAfterSignup() {
         String email = scenarioContext.get("signUpEmail");
         String password = scenarioContext.get("signUpPassword");
 
@@ -83,7 +83,7 @@ public class LoginStepDefinition {
     }
 
     @When("The user login with not existing email {string} and password {string}")
-    public void user_login_with_not_existing_credentials(String email, String password) {
+    public void userLoginWithNotExistingCredentials(String email, String password) {
         loginPage.fillEmailLogin(email);
         loginPage.fillPasswordLogin(password);
 
@@ -92,7 +92,7 @@ public class LoginStepDefinition {
     }
 
     @And("Check if the Registration info has been copied to Account Info")
-    public void check_registration_info_copied_to_Account_info() {
+    public void checkRegistrationInfoCopiedToAccountInfo() {
         String userNameActualResult = loginPage.getRegistrationNameWhichCopiedToAccountInformation();
         String userEmailActualResult = loginPage.getRegistrationEmailWhichCopiedToAccountInformation();
 
@@ -126,7 +126,7 @@ public class LoginStepDefinition {
     }
 
     @Then("The user fills the account information:")
-    public void fill_account_info(DataTable table) {
+    public void fillAccountInfo(DataTable table) {
         Map<String, String> data = table.asMap(String.class, String.class);
 
         loginPage.chooseTitle(RegistrationForm.TITLE.getValue());
@@ -147,7 +147,7 @@ public class LoginStepDefinition {
     }
 
     @And("The user fills the address information:")
-    public void fill_address_info() {
+    public void fillAddressInfo() {
         loginPage.fillFirstName(RegistrationForm.FIRSTNAME.getValue());
         loginPage.fillLastName(RegistrationForm.LASTNAME.getValue());
         loginPage.fillCompany(RegistrationForm.COMPANY.getValue());
@@ -163,7 +163,7 @@ public class LoginStepDefinition {
     }
 
     @And("Click the {string} button on Signup_Login Page")
-    public void click_button_on_signuplogin_page(String nameButton) {
+    public void clickButtonOnSignupLoginPage(String nameButton) {
         String button = commonMethods.refactoredUserFriendlyName(nameButton);
         loginPage.clickButtonOnSignUpLoginPage(button.toLowerCase());
 
@@ -171,12 +171,12 @@ public class LoginStepDefinition {
     }
 
     @Then("The error message {string} should be displayed in the {string} section")
-    public void check_that_appears_error_message(String expectedMessage , String sectionName) {
+    public void checkThatAppearsErrorMessage(String expectedMessage , String sectionName) {
         loginPage.checkErrorMessage(sectionName, expectedMessage, loginPage.getMessageFromLoginSignupSection(sectionName));
     }
 
     @Then("Check PopUp {string} message for {string} on Login section")
-    public void check_popup_message_on_login_page(String expectedMessage, String field) {
+    public void checkPopupMessageOnLoginPage(String expectedMessage, String field) {
         Locator fieldName = null;
         String actualMessage;
 

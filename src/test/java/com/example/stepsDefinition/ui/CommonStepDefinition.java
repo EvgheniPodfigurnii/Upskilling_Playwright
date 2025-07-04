@@ -44,7 +44,7 @@ public class CommonStepDefinition {
     }
 
     @And("Refresh the page")
-    public void refresh_the_page() {
+    public void refreshThePage() {
         driver.getPage().reload();
 
         logger.info("Refresh the page has been successfully");
