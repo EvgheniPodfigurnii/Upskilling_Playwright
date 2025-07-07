@@ -19,7 +19,7 @@ public class ExecutionHook {
 
     @Before("@UI")
     public void setupUI(Scenario scenario) {
-        PlaywrightManager.getInstance().LaunchBrowser(BrowserEnum.EDGE.getKey());
+        PlaywrightManager.getInstance().LaunchBrowser(BrowserEnum.CHROME.getKey());
 
         ScenarioContext.getInstance().setExistUser("username", ExistUser.USERNAME.getKey());
         ScenarioContext.getInstance().setExistUser("email", ExistUser.EMAIL.getKey());
@@ -37,6 +37,7 @@ public class ExecutionHook {
     public void afterScenario(Scenario scenario) {
         if (scenario.isFailed()) {
             screenShotConfigurator().takeScreenshot();
+            screenShotConfigurator().takeScreenshotForAllureReport(scenario);
         }
     }
 

@@ -1,4 +1,3 @@
-
 @UI
 Feature: User Login
 
@@ -23,7 +22,6 @@ Feature: User Login
     And Click the "Login" button on Signup_Login Page
     Then The error message "<errorMessage>" should be displayed in the "Login" section
 
-  Examples:
     Examples:
       | email               | password                             | errorMessage                         |
       | a@b.co              | short                                | Your email or password is incorrect! |
@@ -36,8 +34,8 @@ Feature: User Login
     Then Check PopUp "<popupErrorMessage>" message for "<fieldName>" on Login section
 
     Examples:
-    | email   | password | fieldName | popupErrorMessage                                                    |
-    | abc     |          | email     | Please include an '@' in the email address. 'abc' is missing an '@'. |
-    | abc@    |          | email     | Please enter a part following '@'. 'abc@' is incomplete.             |
-    |         | passw0rd | email     | Please fill out this field.                                          |
-    | abc@bca |          | password  | Please fill out this field.                                          |
+      | email   | password | fieldName | popupErrorMessage                                                    |
+      | abc     |          | email     | Please include an '@' in the email address. 'abc' is missing an '@'. |
+      | abc@    |          | email     | Please enter a part following '@'. 'abc@' is incomplete.             |
+      |         | passw0rd | email     | Please fill out this field.                                          |
+      | abc@bca |          | password  | Please fill out this field.                                          |

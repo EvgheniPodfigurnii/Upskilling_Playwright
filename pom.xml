@@ -9,14 +9,14 @@
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
-<!--        UI/browser automation for web testing (cross-browser).-->
+        <!--        UI/browser automation for web testing (cross-browser).-->
         <dependency>
             <groupId>com.microsoft.playwright</groupId>
             <artifactId>playwright</artifactId>
             <version>1.51.0</version>
         </dependency>
 
-<!--        Behavior-Driven Development (BDD) framework.-->
+        <!--        Behavior-Driven Development (BDD) framework.-->
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
@@ -29,21 +29,21 @@
             <scope>test</scope>
         </dependency>
 
-<!--        Soft assertion-->
+        <!--        Soft assertion-->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>7.7.0</version>
         </dependency>
 
-<!--        Data generator (names, emails, addresses, etc).-->
+        <!--        Data generator (names, emails, addresses, etc).-->
         <dependency>
             <groupId>net.datafaker</groupId>
             <artifactId>datafaker</artifactId>
             <version>2.4.2</version>
         </dependency>
 
-<!--        API testing library.-->
+        <!--        API testing library.-->
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
@@ -51,14 +51,14 @@
             <scope>test</scope>
         </dependency>
 
-<!--      Parsing JSON responses from APIs  -->
+        <!--      Parsing JSON responses from APIs  -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.17.0</version>
         </dependency>
 
-<!--        Structured, performant logging for tests  -->
+        <!--        Structured, performant logging for tests  -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -80,7 +80,7 @@
             <version>2.20.0</version>
         </dependency>
 
-<!--        For running tests with Cucumber/JUnit runner  -->
+        <!--        For running tests with Cucumber/JUnit runner  -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -88,12 +88,35 @@
             <scope>test</scope>
         </dependency>
 
-<!--        Assertion library (more powerful assertions)  -->
+        <!--        Assertion library (more powerful assertions)  -->
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>3.27.3</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- Allure Dependencies -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-cucumber7-jvm</artifactId>
+            <version>2.29.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit5</artifactId>
+            <version>2.29.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-attachments</artifactId>
+            <version>2.29.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit-platform</artifactId>
+            <version>2.29.1</version>
         </dependency>
     </dependencies>
 
@@ -112,6 +135,25 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-allure-report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>allure</executable>
+                            <arguments>
+                                <argument>generate</argument>
+                                <argument>target/allure-results</argument>
+                                <argument>--clean</argument>
+                                <argument>-o</argument>
+                                <argument>target/allure-report</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

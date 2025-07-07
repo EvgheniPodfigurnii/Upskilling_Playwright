@@ -15,8 +15,4 @@ public enum BrowserEnum {
     public String getKey() {
         return key;
     }
-
-    public static String getBrowser(BrowserEnum browser) {
-        return browser.getKey();
-    }
 }
