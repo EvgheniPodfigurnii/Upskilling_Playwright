@@ -52,12 +52,11 @@ public class HeaderComponentStepDefinition {
             if (!actual.equalsIgnoreCase(expected)) {
                 softAssert.assertEquals(actual, expected,  "Failed at link: " + link);
                 logger.error("Expected result is: {} -> Actual result is: {}", expected, actual);
-            } else {
-                logger.info("All header references follow the correct path");
             }
         }
 
         softAssert.assertAll();
+        logger.info("All header references follow the correct path");
     }
 
     @When("Click {string} header link")

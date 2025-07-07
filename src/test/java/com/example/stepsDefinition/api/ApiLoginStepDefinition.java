@@ -56,7 +56,7 @@ public class ApiLoginStepDefinition {
         scenarioContext.set("responseCode", String.valueOf(response));
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
 
-        logger.info("Response after POST request with email: {} and password: {} is : {}",email, password, scenarioContext.get("responseCode"));
+        logger.info("Response after POST request with email: {} and password: {} is : {}",email, password, response.getStatusCode());
     }
 
     @When("Create new user account")
@@ -71,7 +71,7 @@ public class ApiLoginStepDefinition {
         scenarioContext.set("responseCode", String.valueOf(response));
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
 
-        logger.info("Response after Create new user account is : {}", scenarioContext.get("responseCode"));
+        logger.info("Response after Create new user account is : {}", response.getStatusCode());
     }
 
     @When("Create new user account for DELETE flow")
@@ -89,7 +89,7 @@ public class ApiLoginStepDefinition {
         scenarioContext.set("apiEmail", params.get("email"));
         scenarioContext.set("apiPassword", params.get("password"));
 
-        logger.info("Response after Create new user account for DELETE flow is : {}", scenarioContext.get("responseCode"));
+        logger.info("Response after Create new user account for DELETE flow is : {}", response.getStatusCode());
     }
 
     @And("DELETE user account")
@@ -106,7 +106,7 @@ public class ApiLoginStepDefinition {
         scenarioContext.set("responseCode", String.valueOf(response));
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
 
-        logger.info("Response after DELETE user account is : {}", scenarioContext.get("responseCode"));
+        logger.info("Response after DELETE user account is : {}", response.getStatusCode());
     }
 
     @When("Create new user account for UPDATE flow")
@@ -121,7 +121,7 @@ public class ApiLoginStepDefinition {
         scenarioContext.set("responseCode", String.valueOf(response));
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
 
-        logger.info("Response after Create new user account for UPDATE flow is : {}", scenarioContext.get("responseCode"));
+        logger.info("Response after Create new user account for UPDATE flow is : {}", response.getStatusCode());
     }
 
     @When("Get user details")
@@ -134,7 +134,7 @@ public class ApiLoginStepDefinition {
         scenarioContext.set("responseCode", String.valueOf(response));
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
 
-        logger.info("Response after Get user details is : {}", scenarioContext.get("responseCode"));
+        logger.info("Response after Get user details is : {}", response.getStatusCode());
     }
 
     @And("Update user account")
@@ -166,7 +166,7 @@ public class ApiLoginStepDefinition {
         scenarioContext.set("responseCode", String.valueOf(response));
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
 
-        logger.info("Response after Update user account is : {}", scenarioContext.get("responseCode"));
+        logger.info("Response after Update user account is : {}", response.getStatusCode());
     }
 
     @Then("The response code from JSON should be {int}")
@@ -217,26 +217,19 @@ public class ApiLoginStepDefinition {
 
     @When("Send {string} request")
     public void send_request(String method) {
-        Response response;
-
-        switch (method.toUpperCase()) {
-            case "GET":
-                response = RestAssured.given()
-                        .when()
-                        .get(endpoint);
-                break;
-            case "POST":
-                response = RestAssured.given()
-                        .when()
-                        .post(endpoint);
-                break;
-            default:
-                throw new IllegalArgumentException("Unsupported method: " + method);
-        }
+        Response response = switch (method.toUpperCase()) {
+            case "GET" -> RestAssured.given()
+                    .when()
+                    .get(endpoint);
+            case "POST" -> RestAssured.given()
+                    .when()
+                    .post(endpoint);
+            default -> throw new IllegalArgumentException("Unsupported method: " + method);
+        };
 
         scenarioContext.set("responseCode", String.valueOf(response));
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
 
-        logger.info("{} request without parameters was successfully sent. Status: {}", method.toUpperCase(), scenarioContext.get("responseCode"));
+        logger.info("{} request without parameters was successfully sent. Status: {}", method.toUpperCase(), response.getStatusCode());
     }
 }
