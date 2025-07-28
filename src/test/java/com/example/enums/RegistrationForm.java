@@ -4,31 +4,43 @@ import com.example.dataFaker.DataFaker;
 
 
 public enum RegistrationForm {
-    NAME(DataFaker.createName()),
-    EMAIL(DataFaker.createEmail()),
-    PASSWORD(DataFaker.createPassword()),
-    TITLE(DataFaker.generateTitle()),
-    BIRTHDAY(DataFaker.createBirthday("day")),
-    BIRTHMONTH(DataFaker.createBirthday("month")),
-    BIRTHYEAR(DataFaker.createBirthday("year")),
-    FIRSTNAME(DataFaker.createFirstName()),
-    LASTNAME(DataFaker.createLastName()),
-    COMPANY(DataFaker.createCompany()),
-    ADDRESS1(DataFaker.createAddress()),
-    ADDRESS2(DataFaker.createAddress2()),
-    COUNTRY(DataFaker.generateCountry()),
-    ZIPCODE(DataFaker.createZipCode()),
-    STATE(DataFaker.createState()),
-    CITY(DataFaker.createCity()),
-    MOBILENUMBER(DataFaker.createMobilePhone());
+    NAME,
+    EMAIL,
+    PASSWORD,
+    TITLE,
+    BIRTHDAY,
+    BIRTHMONTH,
+    BIRTHYEAR,
+    FIRSTNAME,
+    LASTNAME,
+    COMPANY,
+    ADDRESS1,
+    ADDRESS2,
+    COUNTRY,
+    ZIPCODE,
+    STATE,
+    CITY,
+    MOBILENUMBER;
 
-    private final String value;
-
-    RegistrationForm(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
+    public String generate() {
+        return switch (this) {
+            case NAME -> DataFaker.createName();
+            case EMAIL -> DataFaker.createEmail();
+            case PASSWORD -> DataFaker.createPassword();
+            case TITLE -> DataFaker.generateTitle();
+            case BIRTHDAY -> DataFaker.createBirthday("day");
+            case BIRTHMONTH -> DataFaker.createBirthday("month");
+            case BIRTHYEAR -> DataFaker.createBirthday("year");
+            case FIRSTNAME -> DataFaker.createFirstName();
+            case LASTNAME -> DataFaker.createLastName();
+            case COMPANY -> DataFaker.createCompany();
+            case ADDRESS1 -> DataFaker.createAddress();
+            case ADDRESS2 -> DataFaker.createAddress2();
+            case COUNTRY -> DataFaker.generateCountry();
+            case ZIPCODE -> DataFaker.createZipCode();
+            case STATE -> DataFaker.createState();
+            case CITY -> DataFaker.createCity();
+            case MOBILENUMBER -> DataFaker.createMobilePhone();
+        };
     }
 }

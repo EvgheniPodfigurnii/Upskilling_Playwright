@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class CommonStepDefinition {
-    private static final Logger logger = LogManager.getRootLogger();
+    private static final Logger logger = LogManager.getLogger();
     private final PlaywrightManager driver = PlaywrightManager.getInstance();
     private final CommonMethods commonMethods = new CommonMethods();
 

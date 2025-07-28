@@ -18,7 +18,7 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class HeaderComponentStepDefinition {
-    private static final Logger logger = LogManager.getRootLogger();
+    private static final Logger logger = LogManager.getLogger();
     ScenarioContext scenarioContext = ScenarioContext.getInstance();
     PlaywrightManager driver = PlaywrightManager.getInstance();
     HeaderComponent headerComponent = new HeaderComponent();

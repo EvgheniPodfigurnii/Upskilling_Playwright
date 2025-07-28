@@ -5,20 +5,12 @@ import java.util.Map;
 
 
 public class ScenarioContext {
-    private static ScenarioContext scenarioContext;
+    private static final ThreadLocal<ScenarioContext> scenarioContext = ThreadLocal.withInitial(ScenarioContext::new);
     private final Map<String, String> context = new HashMap<>();
 
 
-    public void setExistUser(String key, String value) {
-        context.put(key, value);
-    }
-
     public static ScenarioContext getInstance() {
-        if (scenarioContext == null) {
-            scenarioContext = new ScenarioContext();
-        }
-
-        return scenarioContext;
+        return scenarioContext.get();
     }
 
     public void set(String key, String value) {

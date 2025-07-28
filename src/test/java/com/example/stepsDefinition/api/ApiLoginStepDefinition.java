@@ -20,7 +20,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ApiLoginStepDefinition {
-    private static final Logger logger = LogManager.getLogger("scenario");
+    private static final Logger logger = LogManager.getLogger();
     private final CommonMethods commonMethods = new CommonMethods();
     private final ScenarioContext scenarioContext = ScenarioContext.getInstance();
     private final ApiLogin apiLogin = new ApiLogin();

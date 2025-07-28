@@ -20,12 +20,44 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
-            <version>7.14.0</version>
+            <version>7.21.1</version>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-junit</artifactId>
-            <version>7.14.0</version>
+            <version>7.21.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Enables Cucumber to run on the JUnit 5 platform -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
+            <version>7.21.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- JUnit 5 API for writing and organizing tests -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.12.1</version>
+            <scope>test</scope>
+        </dependency>
+
+<!--         JUnit engine for executing tests -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.12.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Allows creating and running JUnit test suites -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <version>1.12.1</version>
             <scope>test</scope>
         </dependency>
 
@@ -47,7 +79,7 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>5.5.0</version>
+            <version>5.5.5</version>
             <scope>test</scope>
         </dependency>
 
@@ -80,14 +112,6 @@
             <version>2.20.0</version>
         </dependency>
 
-        <!--        For running tests with Cucumber/JUnit runner  -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
-        </dependency>
-
         <!--        Assertion library (more powerful assertions)  -->
         <dependency>
             <groupId>org.assertj</groupId>
@@ -106,7 +130,6 @@
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-junit5</artifactId>
             <version>2.29.1</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.qameta.allure</groupId>
@@ -131,6 +154,7 @@
                 </configuration>
             </plugin>
 
+<!--            Allure report-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -155,8 +179,46 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Executes tests in parallel (classes and methods) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M7</version>
+                <configuration>
+                    <useModulePath>false</useModulePath>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Ensures consistent version for JUnit Platform Launcher -->
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-launcher</artifactId>
+                <version>1.12.1</version>
+            </dependency>
+
+            <!-- Core JUnit Platform engine for test discovery and execution -->
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-engine</artifactId>
+                <version>1.12.1</version>
+            </dependency>
+
+            <!-- Common utilities for JUnit Platform -->
+            <dependency>
+                <groupId>org.junit.platform</groupId>
+                <artifactId>junit-platform-commons</artifactId>
+                <version>1.12.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <properties>
         <maven.compiler.source>22</maven.compiler.source>

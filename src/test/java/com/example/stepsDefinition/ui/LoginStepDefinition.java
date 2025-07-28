@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class LoginStepDefinition {
-    private static final Logger logger = LogManager.getRootLogger();
+    private static final Logger logger = LogManager.getLogger();
     private final ScenarioContext scenarioContext = ScenarioContext.getInstance();
     private final ScreenShotConfigurator screenShotConfigurator = new ScreenShotConfigurator();
     private final CommonMethods commonMethods = new CommonMethods();
@@ -31,9 +31,9 @@ public class LoginStepDefinition {
 
     @When("The user enters registration credentials")
     public void userEntersRegistrationUsernameEmail() {
-        String signUpName = RegistrationForm.NAME.getValue();
-        String signUpEmail = RegistrationForm.EMAIL.getValue();
-        String signUpPassword = RegistrationForm.PASSWORD.getValue();
+        String signUpName = RegistrationForm.NAME.generate();
+        String signUpEmail = RegistrationForm.EMAIL.generate();
+        String signUpPassword = RegistrationForm.PASSWORD.generate();
 
         loginPage.fillNameSignUp(signUpName);
         loginPage.fillEmailSignUp(signUpEmail);
@@ -129,11 +129,11 @@ public class LoginStepDefinition {
     public void fillAccountInfo(DataTable table) {
         Map<String, String> data = table.asMap(String.class, String.class);
 
-        loginPage.chooseTitle(RegistrationForm.TITLE.getValue());
+        loginPage.chooseTitle(RegistrationForm.TITLE.generate());
         loginPage.fillPassword(scenarioContext.get("signUpPassword"));
-        loginPage.fillDay(RegistrationForm.BIRTHDAY.getValue());
-        loginPage.fillMonth(RegistrationForm.BIRTHMONTH.getValue());
-        loginPage.fillYear(RegistrationForm.BIRTHYEAR.getValue());
+        loginPage.fillDay(RegistrationForm.BIRTHDAY.generate());
+        loginPage.fillMonth(RegistrationForm.BIRTHMONTH.generate());
+        loginPage.fillYear(RegistrationForm.BIRTHYEAR.generate());
 
         if (data.get("Newsletter").equalsIgnoreCase("yes")) {
             loginPage.clickNewsletter();
@@ -148,16 +148,16 @@ public class LoginStepDefinition {
 
     @And("The user fills the address information:")
     public void fillAddressInfo() {
-        loginPage.fillFirstName(RegistrationForm.FIRSTNAME.getValue());
-        loginPage.fillLastName(RegistrationForm.LASTNAME.getValue());
-        loginPage.fillCompany(RegistrationForm.COMPANY.getValue());
-        loginPage.fillAddress1(RegistrationForm.ADDRESS1.getValue());
-        loginPage.fillAddress2(RegistrationForm.ADDRESS2.getValue());
-        loginPage.fillCountry(RegistrationForm.COUNTRY.getValue());
-        loginPage.fillState(RegistrationForm.STATE.getValue());
-        loginPage.fillCity(RegistrationForm.CITY.getValue());
-        loginPage.fillZipCode(RegistrationForm.ZIPCODE.getValue());
-        loginPage.fillMobileNumber(RegistrationForm.MOBILENUMBER.getValue());
+        loginPage.fillFirstName(RegistrationForm.FIRSTNAME.generate());
+        loginPage.fillLastName(RegistrationForm.LASTNAME.generate());
+        loginPage.fillCompany(RegistrationForm.COMPANY.generate());
+        loginPage.fillAddress1(RegistrationForm.ADDRESS1.generate());
+        loginPage.fillAddress2(RegistrationForm.ADDRESS2.generate());
+        loginPage.fillCountry(RegistrationForm.COUNTRY.generate());
+        loginPage.fillState(RegistrationForm.STATE.generate());
+        loginPage.fillCity(RegistrationForm.CITY.generate());
+        loginPage.fillZipCode(RegistrationForm.ZIPCODE.generate());
+        loginPage.fillMobileNumber(RegistrationForm.MOBILENUMBER.generate());
 
         logger.info("Address Information has been filled to Address Info successfully");
     }
