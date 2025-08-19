@@ -9,6 +9,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.qameta.allure.Allure;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.apache.logging.log4j.LogManager;
@@ -32,6 +33,7 @@ public class ApiLoginStepDefinition {
         endpoint = String.format("%s%s", ConfigLoader.getProperty("base.url"), APIEndPoint.getAPIEndPoint(apiEndPoint));
 
         logger.info("API endpoint is: {}", endpoint);
+        Allure.step(String.format("API endpoint is: %s", endpoint));
     }
 
     @When("Send a POST request with {string} and {string}")
@@ -57,6 +59,7 @@ public class ApiLoginStepDefinition {
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
 
         logger.info("Response after POST request with email: {} and password: {} is : {}",email, password, response.getStatusCode());
+        Allure.step(String.format("Response after POST request with email: %s and password: %s is : %s",email, password, response.getStatusCode()));
     }
 
     @When("Create new user account")
@@ -72,6 +75,7 @@ public class ApiLoginStepDefinition {
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
 
         logger.info("Response after Create new user account is : {}", response.getStatusCode());
+        Allure.step(String.format("Response after Create new user account is : %s", response.getStatusCode()));
     }
 
     @When("Create new user account for DELETE flow")
@@ -90,6 +94,7 @@ public class ApiLoginStepDefinition {
         scenarioContext.set("apiPassword", params.get("password"));
 
         logger.info("Response after Create new user account for DELETE flow is : {}", response.getStatusCode());
+        Allure.step(String.format("Response after Create new user account for DELETE flow is : %s", response.getStatusCode()));
     }
 
     @And("DELETE user account")
@@ -107,6 +112,7 @@ public class ApiLoginStepDefinition {
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
 
         logger.info("Response after DELETE user account is : {}", response.getStatusCode());
+        Allure.step(String.format("Response after DELETE user account is : %s", response.getStatusCode()));
     }
 
     @When("Create new user account for UPDATE flow")
@@ -122,6 +128,7 @@ public class ApiLoginStepDefinition {
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
 
         logger.info("Response after Create new user account for UPDATE flow is : {}", response.getStatusCode());
+        Allure.step(String.format("Response after Create new user account for UPDATE flow is : %s", response.getStatusCode()));
     }
 
     @When("Get user details")
@@ -135,6 +142,7 @@ public class ApiLoginStepDefinition {
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
 
         logger.info("Response after Get user details is : {}", response.getStatusCode());
+        Allure.step(String.format("Response after Get user details is : %s", response.getStatusCode()));
     }
 
     @And("Update user account")
@@ -167,6 +175,7 @@ public class ApiLoginStepDefinition {
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
 
         logger.info("Response after Update user account is : {}", response.getStatusCode());
+        Allure.step(String.format("Response after Update user account is : %s", response.getStatusCode()));
     }
 
     @Then("The response code from JSON should be {int}")
@@ -176,10 +185,12 @@ public class ApiLoginStepDefinition {
 
         if (actualResponseCode == expectedResponseCode) {
             logger.info("The response code from JSON: {}", actualResponseCode);
+            Allure.step(String.format("The response code from JSON: %s", actualResponseCode));
         } else {
             assertThat(actualResponseCode)
                     .withFailMessage(() -> {
                         logger.error("Expected response code: {}, but got: {}", expectedResponseCode, actualResponseCode);
+                        Allure.step(String.format("Expected response code: %s, but got: %s", expectedResponseCode, actualResponseCode));
                         return String.format("Expected response code: %s, but got: %s", expectedResponseCode, actualResponseCode);
                     })
                     .isEqualTo(expectedResponseCode);
@@ -193,10 +204,12 @@ public class ApiLoginStepDefinition {
 
         if (actualResponseMessage.equalsIgnoreCase(expectedMessage)) {
             logger.info("Response message from JSON : {}", actualResponseMessage);
+            Allure.step(String.format("Response message from JSON : %s", actualResponseMessage));
         } else {
             assertThat(actualResponseMessage)
                     .withFailMessage(() -> {
                         logger.error("Expected message: {}, but got: {}", expectedMessage, actualResponseMessage);
+                        Allure.step(String.format("Expected message: %s, but got: %s", expectedMessage, actualResponseMessage));
                         return String.format("Expected message: %s, but got: %s", expectedMessage, actualResponseMessage);
                     })
                     .isEqualTo(expectedMessage);
@@ -210,8 +223,10 @@ public class ApiLoginStepDefinition {
 
         if (!actualResponseMessage.isEmpty()) {
             logger.info("Response message from JSON contains {} details : {}", object, actualResponseMessage);
+            Allure.step(String.format("Response message from JSON contains %s details : %s", object, actualResponseMessage));
         } else {
             logger.error("JSON returned null");
+            Allure.step("JSON returned null");
         }
     }
 
@@ -231,5 +246,6 @@ public class ApiLoginStepDefinition {
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
 
         logger.info("{} request without parameters was successfully sent. Status: {}", method.toUpperCase(), response.getStatusCode());
+        Allure.step(String.format("%s request without parameters was successfully sent. Status: %s", method.toUpperCase(), response.getStatusCode()));
     }
 }

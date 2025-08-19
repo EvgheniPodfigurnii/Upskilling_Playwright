@@ -15,7 +15,7 @@ Feature: User Login
     And Click the "Login" button on Signup_Login Page
     Then Check that Logged in as after "Login"
     And Refresh the page
-    Then Check that Logged in as after "Login"
+    And Check that Logged in as after "Login"
 
   Scenario Outline: User login with not existing credentials to check boundary values
     When The user login with not existing email "<email>" and password "<password>"

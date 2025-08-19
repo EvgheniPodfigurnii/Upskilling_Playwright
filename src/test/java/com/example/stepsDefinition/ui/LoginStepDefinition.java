@@ -7,9 +7,9 @@ import com.example.screenshots.ScreenShotConfigurator;
 import com.example.utils.ScenarioContext;
 import com.microsoft.playwright.Locator;
 import io.cucumber.datatable.DataTable;
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
+import io.qameta.allure.Allure;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.asserts.SoftAssert;
@@ -44,6 +44,8 @@ public class LoginStepDefinition {
 
         logger.info("Sign Up Name : {}", signUpName);
         logger.info("Sign Up Email : {}", signUpEmail);
+        Allure.step(String.format("Sign Up Name : %s", signUpName));
+        Allure.step(String.format("Sign Up Email : %s", signUpEmail));
     }
 
     @When("The user enters login credentials")
@@ -56,6 +58,8 @@ public class LoginStepDefinition {
 
         logger.info("Login Email : {}", email);
         logger.info("Login Password : {}", password);
+        Allure.step(String.format("Login Email : %s", email));
+        Allure.step(String.format("Login Password : %s", password));
     }
 
     @When("The user enters login credentials in the signup section")
@@ -68,6 +72,8 @@ public class LoginStepDefinition {
 
         logger.info("Fill name: {} - in the signup section", name);
         logger.info("Fill email: {} - in the signup section", email);
+        Allure.step(String.format("Fill name: %s - in the signup section", name));
+        Allure.step(String.format("Fill email: %s - in the signup section", email));
     }
 
     @When("The user enters credentials after signup")
@@ -80,6 +86,8 @@ public class LoginStepDefinition {
 
         logger.info("Login Email after SignUp : {}", email);
         logger.info("Login Password after SignUp : {}", password);
+        Allure.step(String.format("Login Email after SignUp : %s", email));
+        Allure.step(String.format("Login Password after SignUp : %s", password));
     }
 
     @When("The user login with not existing email {string} and password {string}")
@@ -89,9 +97,59 @@ public class LoginStepDefinition {
 
         logger.info("Login Email is: {}", email);
         logger.info("Login password is: {}", password);
+        Allure.step(String.format("Login Email is: %s", email));
+        Allure.step(String.format("Login password is: %s", password));
     }
 
-    @And("Check if the Registration info has been copied to Account Info")
+    @When("The user fills the account information:")
+    public void fillAccountInfo(DataTable table) {
+        Map<String, String> data = table.asMap(String.class, String.class);
+
+        loginPage.chooseTitle(RegistrationForm.TITLE.generate());
+        loginPage.fillPassword(scenarioContext.get("signUpPassword"));
+        loginPage.fillDay(RegistrationForm.BIRTHDAY.generate());
+        loginPage.fillMonth(RegistrationForm.BIRTHMONTH.generate());
+        loginPage.fillYear(RegistrationForm.BIRTHYEAR.generate());
+
+        if (data.get("Newsletter").equalsIgnoreCase("yes")) {
+            loginPage.clickNewsletter();
+        }
+
+        if (data.get("Special_Offers").equalsIgnoreCase("yes")) {
+            loginPage.clickSpecialOffers();
+        }
+
+        logger.info("Account information has been filled to Account Info successfully");
+        Allure.step("Account information has been filled to Account Info successfully");
+    }
+
+    @When("The user fills the address information:")
+    public void fillAddressInfo() {
+        loginPage.fillFirstName(RegistrationForm.FIRSTNAME.generate());
+        loginPage.fillLastName(RegistrationForm.LASTNAME.generate());
+        loginPage.fillCompany(RegistrationForm.COMPANY.generate());
+        loginPage.fillAddress1(RegistrationForm.ADDRESS1.generate());
+        loginPage.fillAddress2(RegistrationForm.ADDRESS2.generate());
+        loginPage.fillCountry(RegistrationForm.COUNTRY.generate());
+        loginPage.fillState(RegistrationForm.STATE.generate());
+        loginPage.fillCity(RegistrationForm.CITY.generate());
+        loginPage.fillZipCode(RegistrationForm.ZIPCODE.generate());
+        loginPage.fillMobileNumber(RegistrationForm.MOBILENUMBER.generate());
+
+        logger.info("Address Information has been filled to Address Info successfully");
+        Allure.step("Address Information has been filled to Address Info successfully");
+    }
+
+    @When("Click the {string} button on Signup_Login Page")
+    public void clickButtonOnSignupLoginPage(String nameButton) {
+        String button = commonMethods.refactoredUserFriendlyName(nameButton);
+        loginPage.clickButtonOnSignUpLoginPage(button.toLowerCase());
+
+        logger.info("{} button on Signup_Login Page clicked", button);
+        Allure.step(String.format("%s button on Signup_Login Page clicked", button));
+    }
+
+    @Then("Check if the Registration info has been copied to Account Info")
     public void checkRegistrationInfoCopiedToAccountInfo() {
         String userNameActualResult = loginPage.getRegistrationNameWhichCopiedToAccountInformation();
         String userEmailActualResult = loginPage.getRegistrationEmailWhichCopiedToAccountInformation();
@@ -118,56 +176,13 @@ public class LoginStepDefinition {
                 screenShotConfigurator.takeScreenshot();
                 softAssert.assertEquals(actual, expected, "Failed to copy value: " + value);
                 logger.error("Expected result is: {} -> Actual result is: {}", expected, actual);
+                Allure.step(String.format("Expected result is: %s -> Actual result is: %s", expected, actual));
             }
         }
 
         softAssert.assertAll();
         logger.info("Registration name and email has been copied to Account Info successfully");
-    }
-
-    @Then("The user fills the account information:")
-    public void fillAccountInfo(DataTable table) {
-        Map<String, String> data = table.asMap(String.class, String.class);
-
-        loginPage.chooseTitle(RegistrationForm.TITLE.generate());
-        loginPage.fillPassword(scenarioContext.get("signUpPassword"));
-        loginPage.fillDay(RegistrationForm.BIRTHDAY.generate());
-        loginPage.fillMonth(RegistrationForm.BIRTHMONTH.generate());
-        loginPage.fillYear(RegistrationForm.BIRTHYEAR.generate());
-
-        if (data.get("Newsletter").equalsIgnoreCase("yes")) {
-            loginPage.clickNewsletter();
-        }
-
-        if (data.get("Special_Offers").equalsIgnoreCase("yes")) {
-            loginPage.clickSpecialOffers();
-        }
-
-        logger.info("Account information has been filled to Account Info successfully");
-    }
-
-    @And("The user fills the address information:")
-    public void fillAddressInfo() {
-        loginPage.fillFirstName(RegistrationForm.FIRSTNAME.generate());
-        loginPage.fillLastName(RegistrationForm.LASTNAME.generate());
-        loginPage.fillCompany(RegistrationForm.COMPANY.generate());
-        loginPage.fillAddress1(RegistrationForm.ADDRESS1.generate());
-        loginPage.fillAddress2(RegistrationForm.ADDRESS2.generate());
-        loginPage.fillCountry(RegistrationForm.COUNTRY.generate());
-        loginPage.fillState(RegistrationForm.STATE.generate());
-        loginPage.fillCity(RegistrationForm.CITY.generate());
-        loginPage.fillZipCode(RegistrationForm.ZIPCODE.generate());
-        loginPage.fillMobileNumber(RegistrationForm.MOBILENUMBER.generate());
-
-        logger.info("Address Information has been filled to Address Info successfully");
-    }
-
-    @And("Click the {string} button on Signup_Login Page")
-    public void clickButtonOnSignupLoginPage(String nameButton) {
-        String button = commonMethods.refactoredUserFriendlyName(nameButton);
-        loginPage.clickButtonOnSignUpLoginPage(button.toLowerCase());
-
-        logger.info("{} button on Signup_Login Page clicked", button);
+        Allure.step("Registration name and email has been copied to Account Info successfully");
     }
 
     @Then("The error message {string} should be displayed in the {string} section")
@@ -196,10 +211,12 @@ public class LoginStepDefinition {
 
         if (actualMessage.equals(expectedMessage)) {
             logger.info("PASS: {} message matches: '{}'", field, actualMessage);
+            Allure.step(String.format("PASS: %s message matches: '%s'", field, actualMessage));
         } else {
             assertThat(actualMessage)
                     .withFailMessage(() -> {
                         logger.error("Expected message: {}, but got: {}", expectedMessage, actualMessage);
+                        Allure.step(String.format("Expected message: %s, but got: %s", expectedMessage, actualMessage));
                         return String.format("Expected message: %s, but got: %s", expectedMessage, actualMessage);
                     })
                     .isEqualTo(expectedMessage);

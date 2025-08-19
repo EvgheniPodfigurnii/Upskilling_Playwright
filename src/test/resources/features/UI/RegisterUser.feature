@@ -1,4 +1,3 @@
-
 @UI
 Feature: Register User
 
@@ -20,7 +19,7 @@ Feature: Register User
     And Check that redirect to "Home" page
     When Click "Delete Account" header link
     And Click the "Continue" button on Signup_Login Page
-    And Check that redirect to "Home" page
+    Then Check that redirect to "Home" page
 
   Scenario: Registering the user account, to do Logout and after that try to Login
     When The user enters registration credentials

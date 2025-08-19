@@ -6,10 +6,8 @@ import com.example.logging.LogConfigurator;
 import com.example.playwrightManager.PlaywrightManager;
 import com.example.screenshots.ScreenShotConfigurator;
 import com.example.utils.ScenarioContext;
-import io.cucumber.java.Before;
-import io.cucumber.java.After;
-import io.cucumber.java.Scenario;
-
+import io.cucumber.java.*;
+import org.junit.jupiter.api.AfterEach;
 
 public class ExecutionHook {
     private static final ThreadLocal<ScreenShotConfigurator> configuratorThreadLocal =
@@ -21,7 +19,8 @@ public class ExecutionHook {
 
     @Before("@UI")
     public void setupUI(Scenario scenario) {
-        PlaywrightManager.getInstance().LaunchBrowser(BrowserEnum.CHROME.getKey(), BrowserEnum.HEADLESS_TRUE.getBoolean());
+        PlaywrightManager.getInstance().launchBrowser(BrowserEnum.CHROME.getKey(), BrowserEnum.HEADLESS_FALSE.getBoolean());
+        PlaywrightManager.getInstance().openNewTab();
         ScenarioContext.getInstance().set("username", ExistUser.USERNAME.getKey());
         ScenarioContext.getInstance().set("email", ExistUser.EMAIL.getKey());
         ScenarioContext.getInstance().set("password", ExistUser.PASSWORD.getKey());
@@ -30,25 +29,26 @@ public class ExecutionHook {
 
     @Before("@API")
     public void setupAPI(Scenario scenario) {
-        ScenarioContext.getInstance();
         new LogConfigurator().setupLogging(scenario, "API");
     }
 
-    @After
-    public void cleanForMemoryLeaks() {
-        new LogConfigurator().clearContext();
-        configuratorThreadLocal.remove();
-    }
-
-    @After(value = "@UI", order = 2)
-    public void afterScenario(Scenario scenario) {
+    @After("@UI")
+    public void afterUIScenario(Scenario scenario) {
         if (scenario.isFailed()) {
             screenShotConfigurator().takeScreenshot(scenario, true);
+            configuratorThreadLocal.remove();
         }
+
+        PlaywrightManager.getInstance().cleanupScenario();
     }
 
-    @After(value = "@UI", order = 1)
-    public void tearDown() {
-            PlaywrightManager.getInstance().close();
+    @AfterEach
+    public void afterEachScenario() {
+        PlaywrightManager.getInstance().close();
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        PlaywrightManager.getInstance().closeAll();
     }
 }

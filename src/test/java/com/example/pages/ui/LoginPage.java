@@ -3,6 +3,8 @@ package com.example.pages.ui;
 import com.example.playwrightManager.PlaywrightManager;
 import com.microsoft.playwright.ElementHandle;
 import com.microsoft.playwright.Locator;
+import com.microsoft.playwright.PlaywrightException;
+import io.qameta.allure.Allure;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -196,10 +198,12 @@ public class LoginPage {
 
         if (actualMessage.equals(expectedMessage)) {
             logger.info("PASS: {} message matches: '{}'", sectionName, actualMessage);
+            Allure.step(String.format("PASS: %s message matches: '%s'", sectionName, actualMessage));
         } else {
             assertThat(actualMessage)
                     .withFailMessage(() -> {
                         logger.error("Expected message is: {} -> but got: {}", expectedMessage, actualMessage);
+                        Allure.step(String.format("Expected message is: %s -> but got: %s", expectedMessage, actualMessage));
                         return String.format("Expected message is: %s -> but got: %s", expectedMessage, actualMessage);
                     })
                     .isEqualTo(expectedMessage);
@@ -208,10 +212,18 @@ public class LoginPage {
 
     public String getPopUpMessage(Locator locator) {
         ElementHandle handle = locator.elementHandle();
-        driver.getPage().waitForFunction(
-                "el => el.validationMessage && el.validationMessage.length > 0",
-                handle
-        );
+
+        Allure.step("Check PopUp message", () -> {
+            try {
+                driver.getPage().waitForFunction(
+                        "el => el.validationMessage && el.validationMessage.length > 0",
+                        handle
+                );
+                logger.info("PASS: popup message matched");
+            } catch (PlaywrightException exception) {
+                logger.info("FAIL: popup message not matched and got exception: {}", exception.getMessage());
+            }
+        });
 
         return handle.evaluate("el => el.validationMessage").toString();
     }

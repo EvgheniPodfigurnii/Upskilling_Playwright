@@ -37,8 +37,4 @@ public class LogConfigurator {
         ThreadContext.put("logFilePath", logFileName);
         scenarioContext.set("LogPath", folderPath);
     }
-
-    public void clearContext() {
-        ThreadContext.clearAll();
-    }
 }

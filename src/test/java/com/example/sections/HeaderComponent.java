@@ -17,11 +17,6 @@ public class HeaderComponent {
     String deleteAccount = "a[href='/delete_account']";
     String loggedUser = "//a[contains(text(), 'Logged in as')]/b";
 
-
-//    public HeaderComponent(PlaywrightManager driver) {
-//        this.driver = driver;
-//    }
-
     public void clickHeaderLink(String linkName) {
         switch (linkName.toLowerCase()) {
             case "home":
