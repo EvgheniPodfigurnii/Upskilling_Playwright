@@ -1,0 +1,152 @@
+= Uskiling Playwright Framework
+:toc:
+:toclevels: 3
+:icons: font
+:source-highlighter: highlightjs
+
+== Overview
+The *Uskiling Playwright Framework* is an advanced test automation solution built with:
+
+- **Java 17+**
+- **Playwright for Java**
+- **Cucumber (BDD)**
+- **JUnit 5**
+- **Log4j2** (structured logging with per-scenario folders)
+- **Allure Reporting**
+- **Parallel Execution Support**
+
+It enables **end-to-end, API, and UI testing** with a clean, maintainable architecture. The framework supports **multi-threaded execution** where each thread shares a single browser instance and creates a new browser context (window) per scenario.
+
+== Key Features
+- **BDD with Cucumber**: Natural language feature files drive test execution.
+- **Page Object Model (POM)**: Clean separation of page locators and actions.
+- **Parallel Execution**: Run scenarios in parallel with thread-safe browser contexts.
+- **Single Browser Strategy**: One Playwright browser per thread, new context & page per scenario.
+- **Logging**:
+* Log4j2 with structured scenario-based logs.
+* Logs and screenshots saved per scenario in timestamped folders.
+- **Reporting**:
+* Integrated with *Allure* for detailed reports including steps, logs, and screenshots.
+- **Tagging Support**:
+* Run tests selectively using Cucumber tags (e.g. `@UI`, `@API`).
+
+== Project Structure
+[source,plaintext]
+----
+Uskiling_playwright/
+├── src/
+│   ├── main/java/
+│   │   └── framework/         # Core framework classes (PlaywrightManager, utilities)
+│   └── test/java/
+│       ├── steps/             # Step Definitions
+│       ├── pages/             # Page Object Models
+│       ├── hooks/             # Cucumber Hooks (ExecutionHook)
+│       ├── runners/           # JUnit Cucumber Runners
+│       └── features/          # Gherkin Feature files
+├── logs/                      # Generated per-scenario logs
+├── reports/                   # Allure reports
+├── pom.xml                    # Maven dependencies
+└── README.adoc
+----
+
+== Setup & Installation
+1. Clone the repository:
+[source,bash]
+----
+git clone https://github.com/<your-org>/Uskiling_playwright.git
+cd Uskiling_playwright
+----
+
+2. Install dependencies:
+[source,bash]
+----
+mvn clean install
+----
+
+3. Install Playwright browsers:
+[source,bash]
+----
+mvn exec:java -e -Dexec.mainClass="com.microsoft.playwright.CLI" -Dexec.args="install"
+----
+
+== Running Tests
+
+=== Run All Tests
+[source,bash]
+----
+mvn clean test
+----
+
+=== Run Tests by Tag
+[source,bash]
+----
+mvn clean test -Dcucumber.filter.tags="@UI"
+mvn clean test -Dcucumber.filter.tags="@API"
+----
+
+=== Run in Parallel
+Parallel execution is configured in the `junit-platform.properties` file:
+[source,properties]
+----
+cucumber.execution.parallel.enabled = true
+cucumber.execution.parallel.config.strategy = fixed
+cucumber.execution.parallel.config.fixed.parallelism = 2
+cucumber.execution.parallel.config.fixed.max-pool-size = 2
+----
+
+Update `parallelism` to match available threads.
+
+== Reports & Logs
+
+=== Allure Report
+1. Generate report:
+[source,bash]
+----
+mvn allure:report
+----
+
+2. Serve report:
+[source,bash]
+----
+mvn allure:serve
+----
+
+Reports include steps, logs, and attached screenshots.
+
+=== Logs & Screenshots
+- Logs and screenshots are stored under `logs/` in per-scenario timestamped folders:
+[source,plaintext]
+----
+logs/
+ └── 19.08.2025/12-30-45/
+     ├── API
+        ├── APILoginUser
+            ├── ScenarioName
+                ├── testGetLine_1.log
+                ├── screenshotGetLine_1.png
+
+     ├── UI
+        ├── LoginUser
+            ├── ScenarioName
+                ├── testGetLine_11.log
+                ├── screenshotGetLine_11.png
+----
+
+== Configuration
+- **Browser Type**: Configurable in `ExecutionHook` (Chromium, Firefox, WebKit).
+- **Headless Mode**: Toggle headless/headed execution.
+- **Timeouts**: Global timeout settings for steps, elements, and navigation.
+- **Base URL**: Centralized configuration for test environments.
+
+== CI/CD Integration
+- Easily integratable with Jenkins, GitHub Actions, or GitLab CI.
+- Store Allure results as build artifacts.
+- Publish Allure reports for test visibility.
+
+== Contribution Guidelines
+- Follow POM and BDD best practices.
+- One feature per `.feature` file.
+- Keep step definitions lean—delegate logic to Page Objects.
+- Ensure logs and screenshots are attached for debugging.
+- Use meaningful tags for test organization.
+

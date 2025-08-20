@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Appenders>
-        <Routing name="RoutingAppender">
-            <Routes pattern="${ctx:logFilePath}">
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+
+        <Routing name="ScenarioRouting" ignoreExceptions="false">
+            <!-- use whichever key you prefer: logFilePath or routeKey -->
+            <Routes pattern="${ctx:routeKey:-default}">
                 <Route>
-                    <File name="FileAppender" fileName="${ctx:logFilePath}">
-                        <PatternLayout pattern="[%d{HH:mm:ss}] [%t] [%p] %m%n"/>
+                    <File name="PerScenario"
+                          fileName="${ctx:logFilePath}"
+                          createOnDemand="true"
+                          append="true">
+                        <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5p %c - %m%n"/>
                     </File>
                 </Route>
             </Routes>
@@ -14,7 +22,8 @@
 
     <Loggers>
         <Root level="info">
-            <AppenderRef ref="RoutingAppender"/>
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="ScenarioRouting"/>
         </Root>
     </Loggers>
 </Configuration>
