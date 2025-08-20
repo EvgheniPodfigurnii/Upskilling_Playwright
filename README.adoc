@@ -53,17 +53,21 @@ Uskiling_playwright/
 1. Clone the repository:
 [source,bash]
 ----
-git clone https://github.com/<your-org>/Uskiling_playwright.git
-cd Uskiling_playwright
+git clone https://github.com/EvgheniPodfigurnii/Upskilling_Playwright.git
 ----
 
-2. Install dependencies:
+2. Branch:
+----
+master
+----
+
+3. Install dependencies:
 [source,bash]
 ----
 mvn clean install
 ----
 
-3. Install Playwright browsers:
+4. Install Playwright browsers:
 [source,bash]
 ----
 mvn exec:java -e -Dexec.mainClass="com.microsoft.playwright.CLI" -Dexec.args="install"
