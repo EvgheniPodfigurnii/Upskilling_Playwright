@@ -97,7 +97,7 @@ public class ApiLoginStepDefinition {
         Allure.step(String.format("Response after Create new user account for DELETE flow is : %s", response.getStatusCode()));
     }
 
-    @And("DELETE user account")
+    @When("DELETE user account")
     public void delete_user_account() {
         Map<String, String> params = new HashMap<>();
         params.put("email", scenarioContext.get("apiEmail"));
@@ -145,7 +145,7 @@ public class ApiLoginStepDefinition {
         Allure.step(String.format("Response after Get user details is : %s", response.getStatusCode()));
     }
 
-    @And("Update user account")
+    @When("Update user account")
     public void update_user_account() {
         Map<String, String> params = new HashMap<>();
         params.put("name", scenarioContext.get("apiname"));
@@ -178,6 +178,25 @@ public class ApiLoginStepDefinition {
         Allure.step(String.format("Response after Update user account is : %s", response.getStatusCode()));
     }
 
+    @When("Send {string} request")
+    public void send_request(String method) {
+        Response response = switch (method.toUpperCase()) {
+            case "GET" -> RestAssured.given()
+                    .when()
+                    .get(scenarioContext.get("apiEndPoint"));
+            case "POST" -> RestAssured.given()
+                    .when()
+                    .post(scenarioContext.get("apiEndPoint"));
+            default -> throw new IllegalArgumentException("Unsupported method: " + method);
+        };
+
+        scenarioContext.set("responseCode", String.valueOf(response));
+        scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
+
+        logger.info("{} request without parameters was successfully sent. Status: {}", method.toUpperCase(), response.getStatusCode());
+        Allure.step(String.format("%s request without parameters was successfully sent. Status: %s", method.toUpperCase(), response.getStatusCode()));
+    }
+
     @Then("The response code from JSON should be {int}")
     public void the_response_code_should_be(int expectedResponseCode) {
         String responseBody = scenarioContext.get("responseGetBody");
@@ -197,7 +216,7 @@ public class ApiLoginStepDefinition {
         }
     }
 
-    @And("The response message from JSON should be {string}")
+    @Then("The response message from JSON should be {string}")
     public void the_response_message_should_be(String expectedMessage) {
         String responseBody = scenarioContext.get("responseGetBody");
         String actualResponseMessage = commonMethods.getValueFromJson(responseBody, "message");
@@ -216,7 +235,7 @@ public class ApiLoginStepDefinition {
         }
     }
 
-    @And("JSON should be contains {string} details")
+    @Then("JSON should be contains {string} details")
     public void json_user_details(String object) {
         String responseBody = scenarioContext.get("responseGetBody");
         String actualResponseMessage = commonMethods.getValueFromJson(responseBody, object);
@@ -228,24 +247,5 @@ public class ApiLoginStepDefinition {
             logger.error("JSON returned null");
             Allure.step("JSON returned null");
         }
-    }
-
-    @When("Send {string} request")
-    public void send_request(String method) {
-        Response response = switch (method.toUpperCase()) {
-            case "GET" -> RestAssured.given()
-                    .when()
-                    .get(scenarioContext.get("apiEndPoint"));
-            case "POST" -> RestAssured.given()
-                    .when()
-                    .post(scenarioContext.get("apiEndPoint"));
-            default -> throw new IllegalArgumentException("Unsupported method: " + method);
-        };
-
-        scenarioContext.set("responseCode", String.valueOf(response));
-        scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
-
-        logger.info("{} request without parameters was successfully sent. Status: {}", method.toUpperCase(), response.getStatusCode());
-        Allure.step(String.format("%s request without parameters was successfully sent. Status: %s", method.toUpperCase(), response.getStatusCode()));
     }
 }
