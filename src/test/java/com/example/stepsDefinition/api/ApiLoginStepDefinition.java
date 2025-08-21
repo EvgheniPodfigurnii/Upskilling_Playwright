@@ -25,12 +25,12 @@ public class ApiLoginStepDefinition {
     private final CommonMethods commonMethods = new CommonMethods();
     private final ScenarioContext scenarioContext = ScenarioContext.getInstance();
     private final ApiLogin apiLogin = new ApiLogin();
-    private String endpoint;
 
     @Given("The API endpoint is {string}")
     public void the_api_endpoint_is(String endPointName) {
         APIEndPoint apiEndPoint = APIEndPoint.valueOf(endPointName.toUpperCase());
-        endpoint = String.format("%s%s", ConfigLoader.getProperty("base.url"), APIEndPoint.getAPIEndPoint(apiEndPoint));
+        String endpoint = String.format("%s%s", ConfigLoader.getProperty("base.url"), APIEndPoint.getAPIEndPoint(apiEndPoint));
+        scenarioContext.set("apiEndPoint", endpoint);
 
         logger.info("API endpoint is: {}", endpoint);
         Allure.step(String.format("API endpoint is: %s", endpoint));
@@ -53,7 +53,7 @@ public class ApiLoginStepDefinition {
                 .headers("Content-Type", "application/x-www-form-urlencoded")
                 .formParams(params)
                 .when()
-                .post(endpoint);
+                .post(scenarioContext.get("apiEndPoint"));
 
         scenarioContext.set("responseCode", String.valueOf(response));
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
@@ -69,7 +69,7 @@ public class ApiLoginStepDefinition {
         Response response = RestAssured.given()
                 .formParams(params)
                 .when()
-                .post(endpoint);
+                .post(scenarioContext.get("apiEndPoint"));
 
         scenarioContext.set("responseCode", String.valueOf(response));
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
@@ -85,7 +85,7 @@ public class ApiLoginStepDefinition {
         Response response = RestAssured.given()
                 .formParams(params)
                 .when()
-                .post(endpoint);
+                .post(scenarioContext.get("apiEndPoint"));
 
         scenarioContext.set("responseCode", String.valueOf(response));
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
@@ -106,7 +106,7 @@ public class ApiLoginStepDefinition {
         Response response = RestAssured.given()
                 .formParams(params)
                 .when()
-                .delete(endpoint);
+                .delete(scenarioContext.get("apiEndPoint"));
 
         scenarioContext.set("responseCode", String.valueOf(response));
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
@@ -122,7 +122,7 @@ public class ApiLoginStepDefinition {
         Response response = RestAssured.given()
                 .formParams(params)
                 .when()
-                .post(endpoint);
+                .post(scenarioContext.get("apiEndPoint"));
 
         scenarioContext.set("responseCode", String.valueOf(response));
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
@@ -136,7 +136,7 @@ public class ApiLoginStepDefinition {
         Response response = RestAssured.given()
                 .queryParam("email", scenarioContext.get("email"))
                 .when()
-                .get(endpoint);
+                .get(scenarioContext.get("apiEndPoint"));
 
         scenarioContext.set("responseCode", String.valueOf(response));
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
@@ -169,7 +169,7 @@ public class ApiLoginStepDefinition {
         Response response = RestAssured.given()
                 .formParams(params)
                 .when()
-                .put(endpoint);
+                .put(scenarioContext.get("apiEndPoint"));
 
         scenarioContext.set("responseCode", String.valueOf(response));
         scenarioContext.set("responseGetBody", String.valueOf(response.getBody().asString()));
@@ -235,10 +235,10 @@ public class ApiLoginStepDefinition {
         Response response = switch (method.toUpperCase()) {
             case "GET" -> RestAssured.given()
                     .when()
-                    .get(endpoint);
+                    .get(scenarioContext.get("apiEndPoint"));
             case "POST" -> RestAssured.given()
                     .when()
-                    .post(endpoint);
+                    .post(scenarioContext.get("apiEndPoint"));
             default -> throw new IllegalArgumentException("Unsupported method: " + method);
         };
 
