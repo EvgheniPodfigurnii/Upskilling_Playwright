@@ -14,6 +14,7 @@ The *Uskiling Playwright Framework* is an advanced test automation solution buil
 - **Log4j2** (structured logging with per-scenario folders)
 - **Allure Reporting**
 - **Parallel Execution Support**
+- **Gatling**
 
 It enables **end-to-end, API, and UI testing** with a clean, maintainable architecture. The framework supports **multi-threaded execution** where each thread shares a single browser instance and creates a new browser context (window) per scenario.
 
@@ -79,6 +80,12 @@ mvn exec:java -e -Dexec.mainClass="com.microsoft.playwright.CLI" -Dexec.args="in
 [source,bash]
 ----
 mvn clean test
+----
+
+=== Run Gatling Tests
+[source,bash]
+----
+mvn gatling:test
 ----
 
 === Run Tests by Tag

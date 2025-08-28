@@ -141,6 +141,28 @@
             <artifactId>allure-junit-platform</artifactId>
             <version>2.29.1</version>
         </dependency>
+
+        <!-- Gatling -->
+        <dependency>
+            <groupId>io.gatling</groupId>
+            <artifactId>gatling-core-java</artifactId>
+            <version>3.14.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.gatling</groupId>
+            <artifactId>gatling-http-java</artifactId>
+            <version>3.14.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.gatling.highcharts</groupId>
+            <artifactId>gatling-charts-highcharts</artifactId>
+            <version>3.14.3</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -191,6 +213,13 @@
                         <include>**/*Test.java</include>
                     </includes>
                 </configuration>
+            </plugin>
+
+            <!-- Gatling plugin -->
+            <plugin>
+                <groupId>io.gatling</groupId>
+                <artifactId>gatling-maven-plugin</artifactId>
+                <version>4.20.1</version>
             </plugin>
         </plugins>
     </build>
