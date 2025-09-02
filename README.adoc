@@ -95,6 +95,12 @@ mvn clean test -Dcucumber.filter.tags="@UI"
 mvn clean test -Dcucumber.filter.tags="@API"
 ----
 
+=== Number of Pages in the browser
+[source,bash]
+----
+-Dmax.pages.per.browser=5
+----
+
 === Run in Parallel
 Parallel execution is configured in the `junit-platform.properties` file:
 [source,properties]

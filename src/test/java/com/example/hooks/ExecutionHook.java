@@ -7,23 +7,34 @@ import com.example.playwrightManager.PlaywrightManager;
 import com.example.screenshots.ScreenShotConfigurator;
 import com.example.utils.ScenarioContext;
 import io.cucumber.java.*;
-import org.junit.jupiter.api.AfterEach;
 
 public class ExecutionHook {
+    private final String browserName = BrowserEnum.CHROME.name();
+    private final boolean headless = BrowserEnum.HEADLESS_FALSE.getBoolean();
+
     private static final ThreadLocal<ScreenShotConfigurator> configuratorThreadLocal =
             ThreadLocal.withInitial(ScreenShotConfigurator::new);
 
-    public ScreenShotConfigurator screenShotConfigurator() {
+    private ScreenShotConfigurator screenShotConfigurator() {
         return configuratorThreadLocal.get();
     }
 
     @Before("@UI")
     public void setupUI(Scenario scenario) {
-        PlaywrightManager.getInstance().launchBrowser(BrowserEnum.CHROME.getKey(), BrowserEnum.HEADLESS_FALSE.getBoolean());
-        PlaywrightManager.getInstance().openNewTab();
+        PlaywrightManager pm = PlaywrightManager.getInstance();
+
+        // Per-thread browser/context (idempotent)
+        pm.launchBrowser(browserName, headless);
+
+        // Mark thread busy for this scenario + open a NEW tab (existing tabs remain open)
+        pm.beginScenario();
+        pm.openNewTab();
+
+        // Scenario-scoped test data & logging
         ScenarioContext.getInstance().set("username", ExistUser.USERNAME.getKey());
-        ScenarioContext.getInstance().set("email", ExistUser.EMAIL.getKey());
+        ScenarioContext.getInstance().set("email",    ExistUser.EMAIL.getKey());
         ScenarioContext.getInstance().set("password", ExistUser.PASSWORD.getKey());
+
         new LogConfigurator().setupLogging(scenario, "UI");
     }
 
@@ -36,19 +47,17 @@ public class ExecutionHook {
     public void afterUIScenario(Scenario scenario) {
         if (scenario.isFailed()) {
             screenShotConfigurator().takeScreenshot(scenario, true);
-            configuratorThreadLocal.remove();
         }
+        configuratorThreadLocal.remove();
 
-        PlaywrightManager.getInstance().cleanupScenario();
-    }
-
-    @AfterEach
-    public void afterEachScenario() {
-        PlaywrightManager.getInstance().close();
+        // Keep tab open, clear cookies, rotate this thread's browser if cap reached, mark thread idle
+        PlaywrightManager.getInstance().endScenarioDontCloseTab(browserName, headless);
     }
 
     @AfterAll
     public static void tearDown() {
-        PlaywrightManager.getInstance().closeAll();
+        // Closes only idle threads; any thread still running a long scenario stays alive.
+        PlaywrightManager.closeAllIdle();
+        // Remaining busy threads will be closed by the JVM shutdown hook once they finish.
     }
 }
