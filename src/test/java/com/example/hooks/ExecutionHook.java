@@ -9,7 +9,7 @@ import com.example.utils.ScenarioContext;
 import io.cucumber.java.*;
 
 public class ExecutionHook {
-    private final String browserName = BrowserEnum.CHROME.name();
+    private final String browserName = BrowserEnum.FIREFOX.name();
     private final boolean headless = BrowserEnum.HEADLESS_FALSE.getBoolean();
 
     private static final ThreadLocal<ScreenShotConfigurator> configuratorThreadLocal =
