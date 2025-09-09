@@ -24,7 +24,7 @@ Feature: User Login
 
     Examples:
       | email               | password                             | errorMessage                         |
-      | a@b.co              | short                                | Your email or password is incorrect!! |
+      | a@b.co              | short                                | Your email or password is incorrect! |
       | hfebchscbh@mail.net | hbc465!@#$                           | Your email or password is incorrect! |
       | user@abc.com        | veryveryveryveryveryverylongpassword | Your email or password is incorrect! |
 
