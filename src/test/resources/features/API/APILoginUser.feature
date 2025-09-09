@@ -12,7 +12,7 @@ Feature: Verify Login API
     | endpoint | email                  | password     | responseCode | responseMessage                                                      |
     | LOGIN    | newemail8@newemail.com | newspass123! | 200          | User exists!                                                         |
     | LOGIN    |                        | newspass123! | 400          | Bad request, email or password parameter is missing in POST request. |
-    | LOGIN    | notexistuser@email.com | newpass12!!! | 404          | User not found!                                                      |
+    | LOGIN    | notexistuser@email.com | newpass12!!! | 404          | User not found!!                                                      |
 
   Scenario: Register new user account
     Given The API endpoint is "CREATE"
